@@ -1,0 +1,2 @@
+// Copyright 2021 The protobuf-tools Authors
+// SPDX-License-Identifier: Apache-2.0
