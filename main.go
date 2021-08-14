@@ -84,28 +84,4 @@ func gen() error {
 	}
 
 	return nil
-
-	// var flags flag.FlagSet
-	// g := protogen.Options{
-	// 	ParamFunc: flags.Set,
-	// }
-	//
-	// g.Run(func(gen *protogen.Plugin) error {
-	// 	gen.SupportedFeatures = generator.SupportedFeatures
-	//
-	// 	var errs error
-	// 	for _, files := range gen.Files {
-	// 		if files.Generate {
-	// 			if err := generator.Generate(gen, files); err != nil {
-	// 				errs = multierr.Append(errs, err)
-	// 			}
-	// 		}
-	// 	}
-	//
-	// 	if errs != nil {
-	// 		gen.Error(multierr.Combine(errs))
-	// 	}
-	//
-	// 	return nil
-	// })
 }
