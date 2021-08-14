@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 
+	"go.uber.org/multierr"
 	"google.golang.org/protobuf/compiler/protogen"
 
 	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator"
@@ -33,10 +34,17 @@ func main() {
 	g.Run(func(gen *protogen.Plugin) error {
 		gen.SupportedFeatures = generator.SupportedFeatures
 
-		for _, f := range gen.Files {
-			if f.Generate {
-				generator.Generate(gen, f)
+		var errs error
+		for _, files := range gen.Files {
+			if files.Generate {
+				if err := generator.Generate(gen, files); err != nil {
+					errs = multierr.Append(errs, err)
+				}
 			}
+		}
+
+		if errs != nil {
+			gen.Error(multierr.Combine(errs))
 		}
 
 		return nil
