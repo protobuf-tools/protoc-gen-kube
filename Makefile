@@ -38,7 +38,7 @@ GO_LDFLAGS+=-s -w "-extldflags=-static -static-pie"
 
 GO_BUILDTAGS=
 ifeq (${CGO_ENABLED},0)
-	GO_BUILDTAGS=osusergo netgo
+	GO_BUILDTAGS=osusergo netgo typeparams
 endif
 GO_BUILDTAGS_STATIC=static
 GO_INSTALLSUFFIX_STATIC=-installsuffix='netgo'
