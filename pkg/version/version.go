@@ -26,9 +26,10 @@ func init() {
 	buildInfo = moduleBuildInfo
 }
 
-var buildInfoTmpl = ` mod	{{.Main.Path}}	{{.Main.Version}}	{{.Main.Sum}}
-{{range .Deps}} dep	{{.Path}}	{{.Version}}	{{.Sum}}{{if .Replace}}
-	=> {{.Replace.Path}}	{{.Replace.Version}}	{{.Replace.Sum}}{{end}}{{end}}`
+var buildInfoTmpl = ` mod	{{ .Main.Path }}	{{ .Main.Version }}	{{ .Main.Sum }}
+{{ range .Deps }} dep	{{ .Path }}	{{ .Version }}	{{ .Sum }}{{ if .Replace }}
+	=> {{ .Replace.Path }}	{{ .Replace.Version }}	{{ .Replace.Sum }}{{ end }}
+{{ end }}`
 
 func moduleBuildInfo() string {
 	info, ok := debug.ReadBuildInfo()
