@@ -27,7 +27,7 @@ func init() {
 }
 
 var buildInfoTmpl = ` mod	{{ .Main.Path }}	{{ .Main.Version }}	{{ .Main.Sum }}
-{{ range .Deps }} dep	{{ .Path }}	{{ .Version }}	{{ .Sum }}{{ if .Replace }}
+{{ range .Deps }} dep	{{ .Path }}		{{ .Version }}	{{ .Sum }}{{ if .Replace }}
 	=> {{ .Replace.Path }}	{{ .Replace.Version }}	{{ .Replace.Sum }}{{ end }}
 {{ end }}`
 
