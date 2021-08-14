@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/go-logr/logr v1.0.0
 	github.com/go-logr/zapr v1.0.0
+	github.com/spf13/pflag v1.0.5
 	go.uber.org/zap v1.19.0
 	google.golang.org/protobuf v1.27.1
 	k8s.io/apimachinery v0.22.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/mod v0.4.2 // indirect
