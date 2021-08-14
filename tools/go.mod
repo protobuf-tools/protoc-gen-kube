@@ -9,6 +9,9 @@ require (
 	mvdan.cc/gofumpt v0.1.1
 )
 
+// support typeparams build tag
+replace golang.org/x/tools => github.com/zchee/golang-tools v0.0.0-20210814085923-cf63d8262102
+
 require (
 	4d63.com/gochecknoglobals v0.0.0-20201008074935-acfc0b28355a // indirect
 	github.com/BurntSushi/toml v0.3.1 // indirect

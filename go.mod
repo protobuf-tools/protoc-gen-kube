@@ -24,8 +24,8 @@ require (
 )
 
 replace (
-	// support typeparams
-	golang.org/x/tools => golang.org/x/tools v0.1.6-0.20210813165731-45389f592fe9
+	// support typeparams build tag
+	golang.org/x/tools => github.com/zchee/golang-tools v0.0.0-20210814085923-cf63d8262102
 	// support go-logr/logr@v1.0.0
 	k8s.io/klog/v2 => k8s.io/klog/v2 v2.10.1-0.20210806124320-e1f317b53636
 )
