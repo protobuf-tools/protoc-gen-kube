@@ -187,7 +187,7 @@ func (s *Scanner) getGroupVersion(tags map[string][]string, defaultGV *schema.Gr
 		if err == nil {
 			return &gv, nil
 		}
-		return nil, fmt.Errorf("invalid group version '%s' specified: %v", value[0], err)
+		return nil, fmt.Errorf("invalid group version '%s' specified: %w", value[0], err)
 	}
 	return defaultGV, nil
 }

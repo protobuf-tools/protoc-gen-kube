@@ -53,7 +53,7 @@ func (c *Context) ExecutePackages(outDir string, packages Packages) error {
 		}
 	}
 	if len(errors) > 0 {
-		return fmt.Errorf("some packages had errors:\n%v\n", strings.Join(errs2strings(errors), "\n"))
+		return fmt.Errorf("some packages had errors:\n%w\n", strings.Join(errs2strings(errors), "\n"))
 	}
 	return nil
 }
@@ -78,7 +78,7 @@ func (ft DefaultFileType) AssembleFile(f *File, pathname string) error {
 		return et.Error()
 	}
 	if formatted, err := ft.Format(b.Bytes()); err != nil {
-		err = fmt.Errorf("unable to format file %q (%v).", pathname, err)
+		err = fmt.Errorf("unable to format file %q: %w", pathname, err)
 		// Write the file anyway, so they can see what's going wrong and fix the generator.
 		if _, err2 := destFile.Write(b.Bytes()); err2 != nil {
 			return err2
@@ -101,11 +101,11 @@ func (ft DefaultFileType) VerifyFile(f *File, pathname string) error {
 	}
 	formatted, err := ft.Format(b.Bytes())
 	if err != nil {
-		return fmt.Errorf("unable to format the output for %q: %v", friendlyName, err)
+		return fmt.Errorf("unable to format the output for %q: %w", friendlyName, err)
 	}
 	existing, err := ioutil.ReadFile(pathname)
 	if err != nil {
-		return fmt.Errorf("unable to read file %q for comparison: %v", friendlyName, err)
+		return fmt.Errorf("unable to read file %q for comparison: %w", friendlyName, err)
 	}
 	if bytes.Compare(formatted, existing) == 0 {
 		return nil

@@ -145,7 +145,7 @@ func (g *GeneratorArgs) NewBuilder() (*parser.Builder, error) {
 			err = b.AddDir(d)
 		}
 		if err != nil {
-			return nil, fmt.Errorf("unable to add directory %q: %v", d, err)
+			return nil, fmt.Errorf("unable to add directory %q: %w", d, err)
 		}
 	}
 	return b, nil
@@ -191,7 +191,7 @@ func (g *GeneratorArgs) Execute(nameSystems namer.NameSystems, defaultSystem str
 
 	b, err := g.NewBuilder()
 	if err != nil {
-		return fmt.Errorf("Failed making a parser: %v", err)
+		return fmt.Errorf("Failed making a parser: %w", err)
 	}
 
 	// pass through the flag on whether to include *_test.go files
@@ -199,13 +199,13 @@ func (g *GeneratorArgs) Execute(nameSystems namer.NameSystems, defaultSystem str
 
 	c, err := generator.NewContext(b, nameSystems, defaultSystem)
 	if err != nil {
-		return fmt.Errorf("Failed making a context: %v", err)
+		return fmt.Errorf("Failed making a context: %w", err)
 	}
 
 	c.Verify = g.VerifyOnly
 	packages := pkgs(c, g)
 	if err := c.ExecutePackages(g.OutputBase, packages); err != nil {
-		return fmt.Errorf("Failed executing generator: %v", err)
+		return fmt.Errorf("Failed executing generator: %w", err)
 	}
 
 	return nil

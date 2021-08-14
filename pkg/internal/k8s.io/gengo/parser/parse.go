@@ -129,7 +129,7 @@ func (b *Builder) importBuildPackage(dir string) (*build.Package, error) {
 	buildPkg, err := b.importWithMode(dir, build.ImportComment)
 	if err != nil {
 		if _, ok := err.(*build.NoGoError); !ok {
-			return nil, fmt.Errorf("unable to import %q: %v", dir, err)
+			return nil, fmt.Errorf("unable to import %q: %w", dir, err)
 		}
 	}
 	if buildPkg == nil {
@@ -326,11 +326,11 @@ func (b *Builder) addDir(dir string, userRequested bool) error {
 		absPath := filepath.Join(buildPkg.Dir, file)
 		data, err := ioutil.ReadFile(absPath)
 		if err != nil {
-			return fmt.Errorf("while loading %q: %v", absPath, err)
+			return fmt.Errorf("while loading %q: %w", absPath, err)
 		}
 		err = b.addFile(pkgPath, absPath, data, userRequested)
 		if err != nil {
-			return fmt.Errorf("while parsing %q: %v", absPath, err)
+			return fmt.Errorf("while parsing %q: %w", absPath, err)
 		}
 	}
 	return nil
@@ -590,7 +590,7 @@ func (b *Builder) importWithMode(dir string, mode build.ImportMode) (*build.Pack
 	// sufficient.
 	cwd, err := os.Getwd()
 	if err != nil {
-		return nil, fmt.Errorf("unable to get current directory: %v", err)
+		return nil, fmt.Errorf("unable to get current directory: %w", err)
 	}
 	buildPkg, err := b.context.Import(filepath.ToSlash(dir), cwd, mode)
 	if err != nil {

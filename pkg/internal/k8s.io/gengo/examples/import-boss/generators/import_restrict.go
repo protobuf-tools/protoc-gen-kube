@@ -117,13 +117,13 @@ type fileFormat struct {
 func readFile(path string) (*fileFormat, error) {
 	currentBytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't read %v: %v", path, err)
+		return nil, fmt.Errorf("couldn't read %v: %w", path, err)
 	}
 
 	var current fileFormat
 	err = yaml.Unmarshal(currentBytes, &current)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't unmarshal %v: %v", path, err)
+		return nil, fmt.Errorf("couldn't unmarshal %v: %w", path, err)
 	}
 	current.path = path
 	return &current, nil
@@ -136,7 +136,7 @@ func writeFile(path string, ff *fileFormat) error {
 	}
 	f, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("couldn't open %v for writing: %v", path, err)
+		return fmt.Errorf("couldn't open %v for writing: %w", path, err)
 	}
 	defer f.Close()
 	_, err = f.Write(raw)
@@ -220,7 +220,7 @@ func recursiveRead(path string) ([]*fileFormat, error) {
 func (irf importRuleFile) VerifyFile(f *generator.File, path string) error {
 	restrictionFiles, err := recursiveRead(filepath.Join(f.PackageSourcePath, f.Name))
 	if err != nil {
-		return fmt.Errorf("error finding rules file: %v", err)
+		return fmt.Errorf("error finding rules file: %w", err)
 	}
 
 	if err := irf.verifyRules(restrictionFiles, f); err != nil {
@@ -236,7 +236,7 @@ func (irf importRuleFile) verifyRules(restrictionFiles []*fileFormat, f *generat
 		for _, r := range restrictionFile.Rules {
 			re, err := regexp.Compile(r.SelectorRegexp)
 			if err != nil {
-				return fmt.Errorf("regexp `%s` in file %q doesn't compile: %v", r.SelectorRegexp, restrictionFile.path, err)
+				return fmt.Errorf("regexp `%s` in file %q doesn't compile: %w", r.SelectorRegexp, restrictionFile.path, err)
 			}
 
 			selectors[i] = append(selectors[i], re)
@@ -307,7 +307,7 @@ func (irf importRuleFile) verifyInverseRules(restrictionFiles []*fileFormat, f *
 		for _, r := range restrictionFile.InverseRules {
 			re, err := regexp.Compile(r.SelectorRegexp)
 			if err != nil {
-				return fmt.Errorf("regexp `%s` in file %q doesn't compile: %v", r.SelectorRegexp, restrictionFile.path, err)
+				return fmt.Errorf("regexp `%s` in file %q doesn't compile: %w", r.SelectorRegexp, restrictionFile.path, err)
 			}
 
 			selectors[i] = append(selectors[i], re)
