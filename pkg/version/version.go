@@ -13,9 +13,6 @@ import (
 // version is a protoc-gen-kube vesion.
 var version = "v0.0.0"
 
-// gitCommit indicates which git commit hash the binary was built off of.
-var gitCommit = "devel"
-
 // buildInfo is the stub for moduleBuildInfo function which prints build information embedded
 // in the running binary.
 var buildInfo = func() string {
@@ -48,5 +45,5 @@ func moduleBuildInfo() string {
 
 // Version returns the protoc-gen-kube current version and build informations.
 func Version() string {
-	return fmt.Sprintf("%s@%s\n\nBuildInfo:\n%s", version, gitCommit, buildInfo())
+	return fmt.Sprintf("%s\n\nBuildInfo:\n%s", version, buildInfo())
 }

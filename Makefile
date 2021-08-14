@@ -29,11 +29,7 @@ GO_FLAGS := -trimpath
 
 GO_GCFLAGS=
 
-GO_LDFLAGS=-X=${PKG_NAME}/pkg/version.gitCommit=$(shell git describe --abbrev=12 --always)
-TAGS=$(shell git name-rev --tags --name-only)
-ifneq (${TAGS},)
-GO_LDFLAGS+=-X=${PKG_NAME}/pkg/version.version=${TAGS}
-endif
+GO_LDFLAGS=-X=${PKG_NAME}/pkg/version.version=$(shell git describe --abbrev=12 --always)
 GO_LDFLAGS+=-s -w "-extldflags=-static -static-pie"
 
 GO_BUILDTAGS=
@@ -104,7 +100,7 @@ test: CGO_ENABLED=1  # needs race test
 test: GO_BUILDTAGS+=${GO_BUILDTAGS_STATIC}
 test:  ## Runs package test including race condition.
 	$(call target)
-	CGO_ENABLED=$(CGO_ENABLED) $(GO_TEST) -race $(strip $(GO_TEST_FLAGS)) -run=$(GO_TEST_FUNC) $(GO_TEST_PACKAGE)
+	CGO_ENABLED=$(CGO_ENABLED) $(GO_TEST) -tags='$(subst $(space),$(comma),${GO_BUILDTAGS})' -race $(strip $(GO_TEST_FLAGS)) -run=$(GO_TEST_FUNC) $(GO_TEST_PACKAGE)
 
 .PHONY: coverage
 ifneq ($(CIRCLECI),true)
@@ -114,7 +110,7 @@ coverage: CGO_ENABLED=1
 coverage: GO_BUILDTAGS+=${GO_BUILDTAGS_STATIC}
 coverage:  ## Takes packages test coverage.
 	$(call target)
-	CGO_ENABLED=$(CGO_ENABLED) $(GO_TEST) $(strip $(GO_TEST_FLAGS)) -covermode=atomic -coverpkg=./... -coverprofile=${GO_COVERAGE_OUT} $(GO_PACKAGE)
+	CGO_ENABLED=$(CGO_ENABLED) $(GO_TEST) -tags='$(subst $(space),$(comma),${GO_BUILDTAGS})' $(strip $(GO_TEST_FLAGS)) -covermode=atomic -coverpkg=./... -coverprofile=${GO_COVERAGE_OUT} $(GO_PACKAGE)
 
 
 ##@ fmt, vet and lint
@@ -122,8 +118,8 @@ coverage:  ## Takes packages test coverage.
 .PHONY: fmt
 fmt: tools/bin/goimports tools/bin/gofumpt  ## Run goimports and gofumpt.
 	$(call target)
-	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/goimports -local=${PKG} -tags='$(subst $(space),$(comma),${GO_BUILDTAGS})' -w
-	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/gofumpt -tags='$(subst $(space),$(comma),${GO_BUILDTAGS})' -s -extra -w
+	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/goimports -local=${PKG} -w
+	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/gofumpt -s -extra -w
 
 .PHONY: lint
 lint: lint/golangci-lint  ## Run all linters.

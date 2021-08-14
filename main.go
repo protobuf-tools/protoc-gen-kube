@@ -28,7 +28,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Fprintf(os.Stderr, "protoc-gen-kube %s\n", version.Version())
+		fmt.Fprintf(os.Stderr, "protoc-gen-kube@%s\n", version.Version())
 		os.Exit(0)
 	}
 
