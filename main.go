@@ -12,17 +12,15 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 
 	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/version"
 )
-
-// version is a protoc-gen-kube vesion.
-var version = "v0.0.0"
 
 func main() {
 	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Fprintf(os.Stderr, "protoc-gen-kube %s\n", version)
+		fmt.Fprintf(os.Stderr, "protoc-gen-kube %s\n", version.Version())
 		os.Exit(0)
 	}
 
@@ -37,7 +35,7 @@ func main() {
 
 		for _, f := range gen.Files {
 			if f.Generate {
-				generator.GenerateFile(gen, f)
+				generator.Generate(gen, f)
 			}
 		}
 
