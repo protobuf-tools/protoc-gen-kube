@@ -5,7 +5,8 @@ run:
   timeout: 1m
   issues-exit-code: 1
   tests: true
-  skip-dirs: []
+  skip-dirs:
+    - tools
   skip-dirs-use-default: true
   skip-files: []
   allow-parallel-runners: true
@@ -68,11 +69,11 @@ linters-settings:
   goheader:
     values:
       const:
-        AUTHOR: protoc-gen-kube
+        AUTHOR: protobuf-tools
       regexp:
         YEAR: '20\d\d'
     template: |-
-      Copyright {{ YEAR }} The {{ AUTHOR }} Authors.
+      Copyright {{ YEAR }} The {{ AUTHOR }} Authors
       SPDX-License-Identifier: Apache-2.0
   goimports:
     local-prefixes: github.com/

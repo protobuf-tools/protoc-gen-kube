@@ -120,7 +120,7 @@ coverage:  ## Takes packages test coverage.
 ##@ fmt, vet and lint
 
 .PHONY: fmt
-fmt: tools/goimports tools/gofumpt  ## Run goimports and gofumpt.
+fmt: tools/bin/goimports tools/bin/gofumpt  ## Run goimports and gofumpt.
 	$(call target)
 	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/goimports -local=${PKG} -w
 	find . -type f -name '*.go' -not -path './vendor/*' | xargs -P ${JOBS} ${TOOLS_BIN}/gofumpt -s -extra -w
@@ -129,7 +129,7 @@ fmt: tools/goimports tools/gofumpt  ## Run goimports and gofumpt.
 lint: lint/golangci-lint  ## Run all linters.
 
 .PHONY: lint/golangci-lint
-lint/golangci-lint: tools/golangci-lint .golangci.yml  ## Run golangci-lint.
+lint/golangci-lint: tools/bin/golangci-lint .golangci.yml  ## Run golangci-lint.
 	$(call target)
 	${TOOLS_BIN}/golangci-lint -j ${JOBS} run $(strip ${GO_LINT_FLAGS}) ${GO_LINT_PACKAGE}
 
