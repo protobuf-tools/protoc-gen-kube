@@ -1,6 +1,6 @@
 # gengo
 
-This package copied and edit from [k8s.io/gengo@485abfe95c7c](https://github.com/kubernetes/gengo/tree/485abfe95c7c792c41929dea3578927f90485a9f)
+This package copied and edit based from [k8s.io/gengo@485abfe95c7c](https://github.com/kubernetes/gengo/tree/485abfe95c7c792c41929dea3578927f90485a9f).
 
 ---
 
