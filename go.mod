@@ -26,6 +26,10 @@ require (
 replace (
 	// support typeparams build tag
 	golang.org/x/tools => github.com/zchee/golang-tools v0.0.0-20210814085923-cf63d8262102
+
+	// use forked gengo
+	k8s.io/gengo => ./pkg/internal/k8s.io/gengo
+
 	// support go-logr/logr@v1.0.0
 	k8s.io/klog/v2 => k8s.io/klog/v2 v2.10.1-0.20210806124320-e1f317b53636
 )
