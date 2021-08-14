@@ -12,4 +12,4 @@ import (
 const SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
 // Generate generates the Kubernetes controller APIs from Protocol Buffer schemas.
-func Generate(gen *protogen.Plugin, file *protogen.File) {}
+func Generate(gen *protogen.Plugin, file *protogen.File) error { return nil }
