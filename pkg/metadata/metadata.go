@@ -208,7 +208,7 @@ func (m *packageMetadata) Validate() []error {
 }
 
 // NewKubeType returns a new KubeType object representing the source type, the target type and its comment tags
-func NewKubeType(rawType *types.Type, kubeType *types.Type, tags []string) KubeType {
+func NewKubeType(rawType, kubeType *types.Type, tags []string) KubeType {
 	return &kubeTypeMetadata{
 		rawType:  rawType,
 		kubeType: kubeType,
