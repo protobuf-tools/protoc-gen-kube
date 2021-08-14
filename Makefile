@@ -12,7 +12,7 @@ space := $(empty) $(empty)
 # Go
 
 PKG_NAME = $(subst $(GO_PATH)/src/,,$(CURDIR))
-APP = ${PKG_NAME}
+APP = $(notdir ${PKG_NAME})
 
 GO_PATH  ?= $(shell go env GOPATH)
 GO_OS    ?= $(shell go env GOOS)
@@ -29,7 +29,12 @@ GO_FLAGS := -trimpath
 
 GO_GCFLAGS=
 
-GO_LDFLAGS=-X=${PKG_NAME}/pkg/version.gitCommit=$(shell git describe --abbrev=12 --always --tag) -s -w "-extldflags=-static -static-pie"
+GO_LDFLAGS=-X=${PKG_NAME}/pkg/version.gitCommit=$(shell git describe --abbrev=12 --always)
+TAGS=$(shell git name-rev --tags --name-only)
+ifneq (${TAGS},)
+GO_LDFLAGS+=-X=${PKG_NAME}/pkg/version.version=${TAGS}
+endif
+GO_LDFLAGS+=-s -w "-extldflags=-static -static-pie"
 
 GO_BUILDTAGS=
 ifeq (${CGO_ENABLED},0)
