@@ -23,10 +23,12 @@ require (
 )
 
 replace (
-	github.com/go-logr/logr => github.com/go-logr/logr v1.0.0
-	golang.org/x/sys => golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e
 	// support typeparams build tag
 	golang.org/x/tools => github.com/zchee/golang-tools v0.0.0-20210814085923-cf63d8262102
+
 	// support go-logr/logr@v1.0.0
 	k8s.io/klog/v2 => k8s.io/klog/v2 v2.10.1-0.20210806124320-e1f317b53636
 )
+
+// replace
+replace golang.org/x/sys => golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e
