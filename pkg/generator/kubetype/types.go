@@ -42,6 +42,7 @@ type typesGenerator struct {
 // NewTypesGenerator creates a new generator for creating k8s style types.go files.
 func NewTypesGenerator(ctx context.Context, source metadata.PackageMetadata) generator.Generator {
 	return &typesGenerator{
+		ctx: ctx,
 		DefaultGen: generator.DefaultGen{
 			OptionalName: "types",
 		},
