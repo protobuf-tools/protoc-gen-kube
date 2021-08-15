@@ -42,7 +42,7 @@ func DefaultNameSystem() string {
 
 func newLowerCaseNamer(prependPackageNames int, ignoreWords ...string) *namer.NameStrategy {
 	n := &namer.NameStrategy{
-		Join:                namer.Joiner(namer.IL, strings.ToLower),
+		Join:                namer.Joiner(namer.ToLower, strings.ToLower),
 		IgnoreWords:         map[string]bool{},
 		PrependPackageNames: prependPackageNames,
 	}

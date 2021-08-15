@@ -34,13 +34,13 @@ type pluralNamer struct {
 // NewPublicPluralNamer returns a namer that returns the plural form of the input
 // type's name, starting with a uppercase letter.
 func NewPublicPluralNamer(exceptions map[string]string) *pluralNamer {
-	return &pluralNamer{exceptions, IC}
+	return &pluralNamer{exceptions, ToUpper}
 }
 
 // NewPrivatePluralNamer returns a namer that returns the plural form of the input
 // type's name, starting with a lowercase letter.
 func NewPrivatePluralNamer(exceptions map[string]string) *pluralNamer {
-	return &pluralNamer{exceptions, IL}
+	return &pluralNamer{exceptions, ToLower}
 }
 
 // NewAllLowercasePluralNamer returns a namer that returns the plural form of the input

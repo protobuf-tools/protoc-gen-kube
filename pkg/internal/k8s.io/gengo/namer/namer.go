@@ -46,7 +46,7 @@ func IsPrivateGoName(name string) bool {
 // arguments to this constructor.
 func NewPublicNamer(prependPackageNames int, ignoreWords ...string) *NameStrategy {
 	n := &NameStrategy{
-		Join:                Joiner(IC, IC),
+		Join:                Joiner(ToUpper, ToUpper),
 		IgnoreWords:         map[string]bool{},
 		PrependPackageNames: prependPackageNames,
 	}
@@ -61,7 +61,7 @@ func NewPublicNamer(prependPackageNames int, ignoreWords ...string) *NameStrateg
 // arguments to this constructor.
 func NewPrivateNamer(prependPackageNames int, ignoreWords ...string) *NameStrategy {
 	n := &NameStrategy{
-		Join:                Joiner(IL, IC),
+		Join:                Joiner(ToLower, ToUpper),
 		IgnoreWords:         map[string]bool{},
 		PrependPackageNames: prependPackageNames,
 	}
@@ -149,16 +149,16 @@ type NameStrategy struct {
 	Names
 }
 
-// IC ensures the first character is uppercase.
-func IC(in string) string {
+// ToUpper ensures the first character is uppercase.
+func ToUpper(in string) string {
 	if in == "" {
 		return in
 	}
 	return strings.ToUpper(in[:1]) + in[1:]
 }
 
-// IL ensures the first character is lowercase.
-func IL(in string) string {
+// ToLower ensures the first character is lowercase.
+func ToLower(in string) string {
 	if in == "" {
 		return in
 	}
