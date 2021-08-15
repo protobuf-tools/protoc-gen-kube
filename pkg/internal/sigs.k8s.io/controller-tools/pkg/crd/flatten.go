@@ -39,7 +39,7 @@ type ErrorRecorder interface {
 
 // isOrNil checks if val is nil if val is of a nillable type, otherwise,
 // it compares val to valInt (which should probably be the zero value).
-func isOrNil(val reflect.Value, valInt interface{}, zeroInt interface{}) bool {
+func isOrNil(val reflect.Value, valInt, zeroInt interface{}) bool {
 	switch valKind := val.Kind(); valKind {
 	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
 		return val.IsNil()
@@ -283,7 +283,7 @@ func (f *Flattener) FlattenSchema(baseSchema apiext.JSONSchemaProps, currentPack
 // RefParts splits a reference produced by the schema generator into its component
 // type name and package name (if it's a cross-package reference).  Note that
 // referenced packages *must* be looked up relative to the current package.
-func RefParts(ref string) (typ string, pkgName string, err error) {
+func RefParts(ref string) (typ, pkgName string, err error) {
 	if !strings.HasPrefix(ref, defPrefix) {
 		return "", "", fmt.Errorf("non-standard reference link %q", ref)
 	}

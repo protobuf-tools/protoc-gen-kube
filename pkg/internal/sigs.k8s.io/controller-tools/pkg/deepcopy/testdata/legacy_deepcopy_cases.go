@@ -24,23 +24,29 @@ type Foo struct {
 	X int
 }
 
-type Builtin int
-type Slice []int
-type Pointer *int
-type PointerAlias *Builtin
-type Struct Foo
-type Map map[string]int
+type (
+	Builtin      int
+	Slice        []int
+	Pointer      *int
+	PointerAlias *Builtin
+	Struct       Foo
+	Map          map[string]int
+)
 
-type FooAlias Foo
-type FooSlice []Foo
-type FooPointer *Foo
-type FooMap map[string]Foo
+type (
+	FooAlias   Foo
+	FooSlice   []Foo
+	FooPointer *Foo
+	FooMap     map[string]Foo
+)
 
-type AliasBuiltin Builtin
-type AliasSlice Slice
-type AliasPointer Pointer
-type AliasStruct Struct
-type AliasMap Map
+type (
+	AliasBuiltin Builtin
+	AliasSlice   Slice
+	AliasPointer Pointer
+	AliasStruct  Struct
+	AliasMap     Map
+)
 
 // Aliases
 type Ttest struct {
@@ -116,7 +122,7 @@ type TestPointers struct {
 
 type TestSlices struct {
 	Byte         []byte
-	Int8         []int8 //TODO: int8 becomes byte in SnippetWriter
+	Int8         []int8 // TODO: int8 becomes byte in SnippetWriter
 	Int16        []int16
 	Int32        []int32
 	Int64        []int64
@@ -139,7 +145,7 @@ type TestSlices struct {
 
 type Inner struct {
 	Byte    byte
-	Int8    int8 //TODO: int8 becomes byte in SnippetWriter
+	Int8    int8 // TODO: int8 becomes byte in SnippetWriter
 	Int16   int16
 	Int32   int32
 	Int64   int64
@@ -167,13 +173,17 @@ type Struct_Primitives struct {
 	StringField string
 	FloatField  float64
 }
-type Struct_Primitives_Alias Struct_Primitives
-type Struct_Embed_Struct_Primitives struct {
-	Struct_Primitives
-}
+type (
+	Struct_Primitives_Alias        Struct_Primitives
+	Struct_Embed_Struct_Primitives struct {
+		Struct_Primitives
+	}
+)
+
 type Struct_Embed_Int struct {
 	int
 }
+
 type Struct_Struct_Primitives struct {
 	StructField Struct_Primitives
 }
@@ -200,13 +210,17 @@ type Struct_PrimitivePointers struct {
 	StringPtrField *string
 	FloatPtrField  *float64
 }
-type Struct_PrimitivePointers_Alias Struct_PrimitivePointers
-type Struct_Embed_Struct_PrimitivePointers struct {
-	Struct_PrimitivePointers
-}
+type (
+	Struct_PrimitivePointers_Alias        Struct_PrimitivePointers
+	Struct_Embed_Struct_PrimitivePointers struct {
+		Struct_PrimitivePointers
+	}
+)
+
 type Struct_Embed_Pointer struct {
 	*int
 }
+
 type Struct_Struct_PrimitivePointers struct {
 	StructField Struct_PrimitivePointers
 }
@@ -235,10 +249,13 @@ type Struct_Slices struct {
 	SliceManualStructField                 []ManualStruct
 	ManualSliceField                       ManualSlice
 }
-type Struct_Slices_Alias Struct_Slices
-type Struct_Embed_Struct_Slices struct {
-	Struct_Slices
-}
+type (
+	Struct_Slices_Alias        Struct_Slices
+	Struct_Embed_Struct_Slices struct {
+		Struct_Slices
+	}
+)
+
 type Struct_Struct_Slices struct {
 	StructField Struct_Slices
 }
@@ -277,8 +294,7 @@ type Struct_ExplicitObject struct {
 }
 
 // +k8s:deepcopy-gen=false
-type Struct_TypeMeta struct {
-}
+type Struct_TypeMeta struct{}
 
 // +kubebuilder:object:root=true
 type Struct_ExplicitSelectorExplicitObject struct {

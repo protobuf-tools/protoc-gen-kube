@@ -92,9 +92,11 @@ type Generator struct {
 func (Generator) CheckFilter() loader.NodeFilter {
 	return filterTypesForCRDs
 }
+
 func (Generator) RegisterMarkers(into *markers.Registry) error {
 	return crdmarkers.Register(into)
 }
+
 func (g Generator) Generate(ctx *genall.GenerationContext) error {
 	parser := &Parser{
 		Collector: ctx.Collector,

@@ -46,6 +46,7 @@ func (sortByCategory) Group(_ *markers.Definition, help *markers.DefinitionHelp)
 	}
 	return help.Category
 }
+
 func (sortByCategory) Less(i, j *markers.Definition) bool {
 	return i.Name < j.Name
 }
@@ -88,6 +89,7 @@ func (optionsSort) Less(i, j *markers.Definition) bool {
 
 	return iRule < jRule
 }
+
 func (optionsSort) Group(def *markers.Definition, _ *markers.DefinitionHelp) string {
 	parts := strings.Split(def.Name, ":")
 

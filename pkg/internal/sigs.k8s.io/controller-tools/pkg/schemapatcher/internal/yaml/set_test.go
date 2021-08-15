@@ -32,17 +32,20 @@ var _ = Describe("SetNode", func() {
 		wantErr bool
 	}{
 		{name: "null"},
-		{name: "empty, null value",
+		{
+			name:  "empty, null value",
 			obj:   map[string]interface{}{},
 			value: nil,
 			want:  nil,
 		},
-		{name: "empty, non-null value",
+		{
+			name:  "empty, non-null value",
 			obj:   map[string]interface{}{},
 			value: int64(64),
 			want:  int64(64),
 		},
-		{name: "non-empty, unknown path",
+		{
+			name: "non-empty, unknown path",
 			obj: map[string]interface{}{
 				"bar": int64(42),
 			},
@@ -53,7 +56,8 @@ var _ = Describe("SetNode", func() {
 				"foo": "foo",
 			},
 		},
-		{name: "non-empty, existing path",
+		{
+			name: "non-empty, existing path",
 			obj: map[string]interface{}{
 				"bar": int64(42),
 			},
@@ -63,7 +67,8 @@ var _ = Describe("SetNode", func() {
 				"bar": "foo",
 			},
 		},
-		{name: "non-empty, long path",
+		{
+			name: "non-empty, long path",
 			obj: map[string]interface{}{
 				"foo": map[string]interface{}{
 					"bar": int64(42),
@@ -77,7 +82,8 @@ var _ = Describe("SetNode", func() {
 				},
 			},
 		},
-		{name: "invalid type",
+		{
+			name: "invalid type",
 			obj: map[string]interface{}{
 				"foo": []interface{}{int64(42)},
 			},

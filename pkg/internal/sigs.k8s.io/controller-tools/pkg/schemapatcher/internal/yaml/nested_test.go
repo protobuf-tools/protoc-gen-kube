@@ -30,21 +30,25 @@ var _ = Describe("GetNode", func() {
 		found   bool
 		wantErr bool
 	}{
-		{name: "null",
+		{
+			name:  "null",
 			found: true,
 		},
-		{name: "empty",
+		{
+			name:  "empty",
 			obj:   map[string]interface{}{},
 			found: true,
 			want:  map[string]interface{}{},
 		},
-		{name: "non-empty, wrong path",
+		{
+			name: "non-empty, wrong path",
 			obj: map[string]interface{}{
 				"bar": int64(42),
 			},
 			path: []string{"foo"},
 		},
-		{name: "non-empty, right path",
+		{
+			name: "non-empty, right path",
 			obj: map[string]interface{}{
 				"bar": int64(42),
 			},
@@ -52,7 +56,8 @@ var _ = Describe("GetNode", func() {
 			want:  int64(42),
 			found: true,
 		},
-		{name: "non-empty, long path",
+		{
+			name: "non-empty, long path",
 			obj: map[string]interface{}{
 				"foo": map[string]interface{}{
 					"bar": int64(42),
@@ -62,7 +67,8 @@ var _ = Describe("GetNode", func() {
 			want:  int64(42),
 			found: true,
 		},
-		{name: "invalid type",
+		{
+			name: "invalid type",
 			obj: map[string]interface{}{
 				"foo": []interface{}{int64(42)},
 			},

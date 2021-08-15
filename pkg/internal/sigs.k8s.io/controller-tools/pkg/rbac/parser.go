@@ -34,11 +34,9 @@ import (
 	"sigs.k8s.io/controller-tools/pkg/markers"
 )
 
-var (
-	// RuleDefinition is a marker for defining RBAC rules.
-	// Call ToRule on the value to get a Kubernetes RBAC policy rule.
-	RuleDefinition = markers.Must(markers.MakeDefinition("kubebuilder:rbac", markers.DescribesPackage, Rule{}))
-)
+// RuleDefinition is a marker for defining RBAC rules.
+// Call ToRule on the value to get a Kubernetes RBAC policy rule.
+var RuleDefinition = markers.Must(markers.MakeDefinition("kubebuilder:rbac", markers.DescribesPackage, Rule{}))
 
 // +controllertools:marker:generateHelp:category=RBAC
 
@@ -204,7 +202,6 @@ func GenerateRoles(ctx *genall.GenerationContext, roleName string) ([]interface{
 		var policyRules []rbacv1.PolicyRule
 		for _, key := range keys {
 			policyRules = append(policyRules, ruleMap[key].ToRule())
-
 		}
 		return policyRules
 	}

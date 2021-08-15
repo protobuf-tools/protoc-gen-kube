@@ -169,6 +169,7 @@ func (f *fromWriter) VisualLength() int {
 	}
 	return len(f.cache)
 }
+
 func (f *fromWriter) WriteTo(w io.Writer) error {
 	if f.cache != nil {
 		if f.cacheError != nil {
@@ -226,6 +227,7 @@ func (m *SpanWriter) VisualLength() int {
 	}
 	return res
 }
+
 func (m *SpanWriter) WriteTo(w io.Writer) error {
 	for _, span := range m.contents {
 		if err := span.WriteTo(w); err != nil {
@@ -252,6 +254,7 @@ func (l *lines) VisualLength() int {
 	}
 	return l.content.VisualLength()
 }
+
 func (l *lines) WriteTo(w io.Writer) error {
 	if err := writePadding(w, linesPadding, l.amountBefore); err != nil {
 		return err

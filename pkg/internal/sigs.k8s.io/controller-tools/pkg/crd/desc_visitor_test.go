@@ -26,7 +26,6 @@ import (
 )
 
 var _ = Describe("TruncateDescription", func() {
-
 	It("should drop the description for all fields for zero value of maxLen", func() {
 		schema := &apiext.JSONSchemaProps{
 			Description: "top level description",
@@ -42,7 +41,6 @@ var _ = Describe("TruncateDescription", func() {
 				"Spec": {},
 			},
 		}))
-
 	})
 
 	It("should truncate the description only in cases where description exceeds maxLen", func() {

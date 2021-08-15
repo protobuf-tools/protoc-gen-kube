@@ -37,12 +37,10 @@ const (
 	defPrefix = "#/definitions/"
 )
 
-var (
-	// byteType is the types.Type for byte (see the types documention
-	// for why we need to look this up in the Universe), saved
-	// for quick comparison.
-	byteType = types.Universe.Lookup("byte").Type()
-)
+// byteType is the types.Type for byte (see the types documention
+// for why we need to look this up in the Universe), saved
+// for quick comparison.
+var byteType = types.Universe.Lookup("byte").Type()
 
 // SchemaMarker is any marker that needs to modify the schema of the underlying type or field.
 type SchemaMarker interface {
@@ -403,7 +401,7 @@ func structToSchema(ctx *schemaContext, structType *ast.StructType) *apiext.JSON
 // builtinToType converts builtin basic types to their equivalent JSON schema form.
 // It *only* handles types allowed by the kubernetes API standards. Floats are not
 // allowed unless allowDangerousTypes is true
-func builtinToType(basic *types.Basic, allowDangerousTypes bool) (typ string, format string, err error) {
+func builtinToType(basic *types.Basic, allowDangerousTypes bool) (typ, format string, err error) {
 	// NB(directxman12): formats from OpenAPI v3 are slightly different than those defined
 	// in JSONSchema.  This'll use the OpenAPI v3 ones, since they're useful for bounding our
 	// non-string types.

@@ -63,7 +63,7 @@ func (c *codeWriter) If(setup string, block func()) {
 
 // If writes if and else statements with the given setup/condition clause, executing
 // the given functions to write the contents of the blocks.
-func (c *codeWriter) IfElse(setup string, ifBlock func(), elseBlock func()) {
+func (c *codeWriter) IfElse(setup string, ifBlock, elseBlock func()) {
 	c.Linef("if %s {", setup)
 	ifBlock()
 	c.Line("} else {")

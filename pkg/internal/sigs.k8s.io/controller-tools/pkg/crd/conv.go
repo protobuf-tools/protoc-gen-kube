@@ -11,9 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-var (
-	conversionScheme = runtime.NewScheme()
-)
+var conversionScheme = runtime.NewScheme()
 
 func init() {
 	if err := apiextinternal.AddToScheme(conversionScheme); err != nil {

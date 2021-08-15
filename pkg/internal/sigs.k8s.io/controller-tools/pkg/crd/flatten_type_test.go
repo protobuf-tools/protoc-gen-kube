@@ -69,7 +69,6 @@ var _ = Describe("General Schema Flattening", func() {
 				default:
 					return crd.TypeIdent{}, fmt.Errorf("unknown package %q", pkgName)
 				}
-
 			},
 		}
 	})
@@ -381,6 +380,5 @@ var _ = Describe("General Schema Flattening", func() {
 				},
 			},
 		}))
-
 	})
 })

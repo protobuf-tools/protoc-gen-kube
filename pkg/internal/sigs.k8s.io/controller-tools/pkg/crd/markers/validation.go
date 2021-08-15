@@ -17,9 +17,8 @@ limitations under the License.
 package markers
 
 import (
-	"fmt"
-
 	"encoding/json"
+	"fmt"
 
 	apiext "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 
@@ -250,6 +249,7 @@ func (m Maximum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.Maximum = &val
 	return nil
 }
+
 func (m Minimum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "integer" {
 		return fmt.Errorf("must apply minimum to an integer")
@@ -258,6 +258,7 @@ func (m Minimum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.Minimum = &val
 	return nil
 }
+
 func (m ExclusiveMaximum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "integer" {
 		return fmt.Errorf("must apply exclusivemaximum to an integer")
@@ -265,6 +266,7 @@ func (m ExclusiveMaximum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.ExclusiveMaximum = bool(m)
 	return nil
 }
+
 func (m ExclusiveMinimum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "integer" {
 		return fmt.Errorf("must apply exclusiveminimum to an integer")
@@ -272,6 +274,7 @@ func (m ExclusiveMinimum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.ExclusiveMinimum = bool(m)
 	return nil
 }
+
 func (m MultipleOf) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "integer" {
 		return fmt.Errorf("must apply multipleof to an integer")
@@ -289,6 +292,7 @@ func (m MaxLength) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.MaxLength = &val
 	return nil
 }
+
 func (m MinLength) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "string" {
 		return fmt.Errorf("must apply minlength to a string")
@@ -297,6 +301,7 @@ func (m MinLength) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.MinLength = &val
 	return nil
 }
+
 func (m Pattern) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "string" {
 		return fmt.Errorf("must apply pattern to a string")
@@ -313,6 +318,7 @@ func (m MaxItems) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.MaxItems = &val
 	return nil
 }
+
 func (m MinItems) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "array" {
 		return fmt.Errorf("must apply minitems to an array")
@@ -321,6 +327,7 @@ func (m MinItems) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.MinItems = &val
 	return nil
 }
+
 func (m UniqueItems) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	if schema.Type != "array" {
 		return fmt.Errorf("must apply uniqueitems to an array")
@@ -364,6 +371,7 @@ func (m Enum) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.Enum = vals
 	return nil
 }
+
 func (m Format) ApplyToSchema(schema *apiext.JSONSchemaProps) error {
 	schema.Format = string(m)
 	return nil

@@ -59,7 +59,6 @@ var _ = Describe("Collecting", func() {
 	})
 
 	Context("of package-level markers", func() {
-
 		It("should consider markers anywhere not obviously type- or field-level as package-level", func() {
 			By("grabbing all package-level markers")
 			pkgMarkers, err := PackageMarkers(col, fakePkg)
@@ -123,7 +122,6 @@ var _ = Describe("Collecting", func() {
 
 				By("checking that the marker got reassociated")
 				Expect(pkgMarkers).To(HaveKeyWithValue("testing:pkglvl", ContainElement("here reassociated no godoc")))
-
 			})
 		})
 
@@ -151,13 +149,11 @@ var _ = Describe("Collecting", func() {
 			Expect(pkgMarkers).To(SatisfyAny(
 				Not(HaveKey("testing:eitherlvl")),
 				HaveKeyWithValue("testing:eitherlvl", Not(ContainElement("here not reassociated")))))
-
 		})
 
 		It("should consider markers on the gendecl even if there are no more markers in the file", func() {
 			Expect(markersByType).To(HaveKeyWithValue("Cheese",
 				HaveKeyWithValue("testing:typelvl", ContainElement("here on typedecl with no more"))))
-
 		})
 	})
 

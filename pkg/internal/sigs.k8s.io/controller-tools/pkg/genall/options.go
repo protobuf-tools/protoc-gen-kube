@@ -23,9 +23,7 @@ import (
 	"sigs.k8s.io/controller-tools/pkg/markers"
 )
 
-var (
-	InputPathsMarker = markers.Must(markers.MakeDefinition("paths", markers.DescribesPackage, InputPaths(nil)))
-)
+var InputPathsMarker = markers.Must(markers.MakeDefinition("paths", markers.DescribesPackage, InputPaths(nil)))
 
 // +controllertools:marker:generateHelp:category=""
 
@@ -72,7 +70,6 @@ func RegistryFromOptions(optionsRegistry *markers.Registry, options []string) (*
 // further modified.  Not default generators are used if none are specified -- you can check
 // the output and rerun for that.
 func FromOptions(optionsRegistry *markers.Registry, options []string) (*Runtime, error) {
-
 	protoRt, err := protoFromOptions(optionsRegistry, options)
 	if err != nil {
 		return nil, err
@@ -181,7 +178,7 @@ type protoRuntime struct {
 
 // splitOutputRuleOption splits a marker name of "output:rule:gen" or "output:rule"
 // into its compontent rule and generator name.
-func splitOutputRuleOption(name string) (ruleName string, genName string) {
+func splitOutputRuleOption(name string) (ruleName, genName string) {
 	parts := strings.SplitN(name, ":", 3)
 	if len(parts) == 3 {
 		// output:<generator>:<rule>

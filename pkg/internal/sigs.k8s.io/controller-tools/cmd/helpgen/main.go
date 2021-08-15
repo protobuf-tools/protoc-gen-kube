@@ -73,7 +73,7 @@ type generateHelp struct {
 	Category string `marker:",optional"`
 }
 
-func godocToDetails(typeName string, doc string) (summary, details string) {
+func godocToDetails(typeName, doc string) (summary, details string) {
 	docParts := strings.SplitN(doc, "\n", 2)
 	summary = docParts[0]
 	if summaryWords := strings.SplitN(summary, " ", 2); summaryWords[0] == typeName {
@@ -115,6 +115,7 @@ func (Generator) RegisterMarkers(reg *markers.Registry) error {
 	})
 	return nil
 }
+
 func (g Generator) Generate(ctx *genall.GenerationContext) error {
 	var headerText string
 	if g.HeaderFile != "" {

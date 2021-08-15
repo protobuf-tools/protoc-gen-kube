@@ -188,6 +188,5 @@ var _ = Describe("CRD Generation From Parsing to CustomResourceDefinition", func
 
 		By("checking that no errors occurred along the way (expect for type errors)")
 		Expect(packageErrors(cronJobPkg, packages.TypeError)).NotTo(HaveOccurred())
-
 	})
 })

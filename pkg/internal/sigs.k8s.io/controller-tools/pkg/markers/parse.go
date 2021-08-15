@@ -896,7 +896,7 @@ func MakeAnyTypeDefinition(name string, target TargetType, output interface{}) (
 // splitMarker takes a marker in the form of `+a:b:c=arg,d=arg` and splits it
 // into the name (`a:b`), the name if it's not a struct (`a:b:c`), and the parts
 // that are definitely fields (`arg,d=arg`).
-func splitMarker(raw string) (name string, anonymousName string, restFields string) {
+func splitMarker(raw string) (name, anonymousName, restFields string) {
 	raw = raw[1:] // get rid of the leading '+'
 	nameFieldParts := strings.SplitN(raw, "=", 2)
 	if len(nameFieldParts) == 1 {

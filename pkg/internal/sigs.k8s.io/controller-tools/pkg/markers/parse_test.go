@@ -32,19 +32,21 @@ func mustDefine(reg *Registry, name string, target TargetType, obj interface{}) 
 	Expect(reg.Define(name, target, obj)).To(Succeed())
 }
 
-type wrappedMarkerVal string
-type multiFieldStruct struct {
-	Str          string
-	Int          int
-	Bool         bool
-	Any          interface{}
-	PtrOpt       *string
-	NormalOpt    string `marker:",optional"`
-	DiffNamed    string `marker:"other"`
-	BothTags     string `marker:"both,optional"`
-	Slice        []int
-	SliceOfSlice [][]int
-}
+type (
+	wrappedMarkerVal string
+	multiFieldStruct struct {
+		Str          string
+		Int          int
+		Bool         bool
+		Any          interface{}
+		PtrOpt       *string
+		NormalOpt    string `marker:",optional"`
+		DiffNamed    string `marker:"other"`
+		BothTags     string `marker:"both,optional"`
+		Slice        []int
+		SliceOfSlice [][]int
+	}
+)
 
 type allOptionalStruct struct {
 	OptStr string `marker:",optional"`

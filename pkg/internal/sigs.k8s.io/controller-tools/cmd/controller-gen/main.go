@@ -225,7 +225,7 @@ func printMarkerDocs(c *cobra.Command, rawOptions []string, whichLevel int) erro
 	return helpForLevels(c.OutOrStdout(), c.OutOrStderr(), whichLevel, reg, help.SortByCategory)
 }
 
-func helpForLevels(mainOut io.Writer, errOut io.Writer, whichLevel int, reg *markers.Registry, sorter help.SortGroup) error {
+func helpForLevels(mainOut, errOut io.Writer, whichLevel int, reg *markers.Registry, sorter help.SortGroup) error {
 	helpInfo := help.ByCategory(reg, sorter)
 	switch whichLevel {
 	case jsonHelp:

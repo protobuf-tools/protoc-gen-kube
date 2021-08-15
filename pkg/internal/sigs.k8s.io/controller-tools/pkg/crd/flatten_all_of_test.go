@@ -32,6 +32,7 @@ type fakeErrRecorder struct {
 func (f *fakeErrRecorder) AddError(err error) {
 	f.Errors = append(f.Errors, err)
 }
+
 func (f *fakeErrRecorder) FirstError() error {
 	if len(f.Errors) == 0 {
 		return nil

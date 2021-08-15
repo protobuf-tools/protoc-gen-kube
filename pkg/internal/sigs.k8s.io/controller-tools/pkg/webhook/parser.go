@@ -39,11 +39,9 @@ const (
 	defaultWebhookVersion = "v1"
 )
 
-var (
-	// ConfigDefinition s a marker for defining Webhook manifests.
-	// Call ToWebhook on the value to get a Kubernetes Webhook.
-	ConfigDefinition = markers.Must(markers.MakeDefinition("kubebuilder:webhook", markers.DescribesPackage, Config{}))
-)
+// ConfigDefinition s a marker for defining Webhook manifests.
+// Call ToWebhook on the value to get a Kubernetes Webhook.
+var ConfigDefinition = markers.Must(markers.MakeDefinition("kubebuilder:webhook", markers.DescribesPackage, Config{}))
 
 // supportedWebhookVersions returns currently supported API version of {Mutating,Validating}WebhookConfiguration.
 func supportedWebhookVersions() []string {

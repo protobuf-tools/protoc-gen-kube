@@ -18,7 +18,6 @@ package loader
 
 import (
 	"fmt"
-
 	"go/ast"
 	"strconv"
 	"sync"

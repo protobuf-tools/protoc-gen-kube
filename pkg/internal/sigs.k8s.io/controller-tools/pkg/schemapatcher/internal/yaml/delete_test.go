@@ -46,7 +46,8 @@ var _ = Describe("DeleteNode", func() {
 			path:  []string{"bar"},
 			want: map[string]interface{}{},
 		},*/
-		{name: "non-empty, long path",
+		{
+			name: "non-empty, long path",
 			obj: map[string]interface{}{
 				"foo": map[string]interface{}{
 					"bar": int64(42),

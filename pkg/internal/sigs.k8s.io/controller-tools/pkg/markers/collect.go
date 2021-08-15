@@ -389,12 +389,11 @@ func (v markerSubVisitor) Visit(node ast.Node) ast.Visitor {
 	v.commentInd = lastCommentInd + 1
 
 	return resVisitor
-
 }
 
 // associatedCommentsFor returns the doc comment group (if relevant and present) and end-of-line comment
 // (again if relevant and present) for the given AST node.
-func associatedCommentsFor(node ast.Node) (docGroup *ast.CommentGroup, lastLineCommentGroup *ast.CommentGroup) {
+func associatedCommentsFor(node ast.Node) (docGroup, lastLineCommentGroup *ast.CommentGroup) {
 	switch typedNode := node.(type) {
 	case *ast.Field:
 		docGroup = typedNode.Doc

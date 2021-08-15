@@ -34,8 +34,10 @@ func TestMarkers(t *testing.T) {
 
 // do this once because it creates files
 
-var fakePkg *loader.Package
-var exported *pkgstest.Exported
+var (
+	fakePkg  *loader.Package
+	exported *pkgstest.Exported
+)
 
 var _ = BeforeSuite(func() {
 	modules := []pkgstest.Module{

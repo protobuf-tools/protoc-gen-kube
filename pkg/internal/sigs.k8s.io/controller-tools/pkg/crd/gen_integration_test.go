@@ -81,7 +81,6 @@ var _ = Describe("CRD Generation proper defaulting", func() {
 
 		By("comparing the two")
 		Expect(out.buf.String()).To(Equal(string(expectedFile)), cmp.Diff(out.buf.String(), string(expectedFile)))
-
 	})
 
 	It("should not strip v1 CRDs of default fields and metadata description", func() {

@@ -195,6 +195,7 @@ func (d DeepCopyIntoRef) DeepCopyInto(out *DeepCopyIntoRef) {
 // Case: kubernetes-sigs/controller-tools#262 part 1:
 // Type renames of slices to pointers.
 type SliceOfPointers []*SomeStruct
+
 type SomeStruct struct {
 	Foo string `json:"foo"`
 }
