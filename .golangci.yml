@@ -88,14 +88,14 @@ linters-settings:
     alias: []
     no-unaliased: true
   lll:
-    line-length: 120
+    line-length: 200
     tab-width: 1
   misspell:
     locale: US
   nakedret:
     max-func-lines: 30
   nestif:
-    min-complexity: 4
+    min-complexity: 5
   prealloc:
     simple: true
     range-loops: true
@@ -220,3 +220,7 @@ issues:
       path: main.go
       linters:
         - gocritic
+
+    - text: "context.Context"
+      linters:
+        - wrapcheck

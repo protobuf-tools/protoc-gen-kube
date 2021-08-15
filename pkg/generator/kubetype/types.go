@@ -21,6 +21,7 @@ package kubetype
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"k8s.io/gengo/generator"
@@ -75,7 +76,12 @@ func (g *typesGenerator) GenerateType(c *generator.Context, t *types.Type, w io.
 		m["KubeType"] = kubeType
 		sw.Do(kubeTypeTemplate, m)
 	}
-	return sw.Error()
+
+	if err := sw.Error(); err != nil {
+		return fmt.Errorf("encountered error on write snippet: %w", err)
+	}
+
+	return nil
 }
 
 const kubeTypeTemplate = `

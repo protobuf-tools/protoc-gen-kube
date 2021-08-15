@@ -123,7 +123,7 @@ func (s *metadataStore) MetadataForGV(gv *schema.GroupVersion) PackageMetadata {
 		s.metadataForGV[simpleGV.String()] = existing
 		s.metadata = append(s.metadata, existing)
 	} else if gv.Group != existing.GroupVersion().Group {
-		logr.FromContextOrDiscard(s.ctx).Error(errors.New("Overlapping packages"), "overlapping packages for Group/Versions", "GroupVersion", gv, "overlap GroupVersion", existing.GroupVersion())
+		logr.FromContextOrDiscard(s.ctx).Error(errors.New("overlapping packages"), "overlapping packages for Group/Versions", "GroupVersion", gv, "overlap GroupVersion", existing.GroupVersion())
 		return nil
 	}
 	return existing

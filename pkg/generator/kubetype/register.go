@@ -84,7 +84,7 @@ func (g *registerGenerator) Imports(c *generator.Context) []string {
 	return g.imports.ImportLines()
 }
 
-func (g registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
+func (g *registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
 	sw := generator.NewSnippetWriter(w, c, "$", "$")
 	var lowerCaseSchemeKubeTypes, camelCaseSchemeKubeTypes []metadata.KubeType
 	for _, k := range g.source.AllKubeTypes() {
