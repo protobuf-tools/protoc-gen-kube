@@ -48,7 +48,7 @@ func gen() error {
 	arguments := args.Default().WithoutDefaultFlagParsing() // WithoutDefaultFlagParsing is suck
 
 	// setup flags
-	pflag.BoolVar(&flagVersion, "version", false, fmt.Sprintf("print %s version", filepath.Base(os.Args[0])))
+	pflag.BoolVarP(&flagVersion, "version", "v", false, fmt.Sprintf("print %s version", filepath.Base(os.Args[0])))
 	arguments.AddFlags(pflag.CommandLine)
 	pflag.Parse()
 
