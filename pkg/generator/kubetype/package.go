@@ -29,7 +29,7 @@ import (
 	"github.com/protobuf-tools/protoc-gen-kube/pkg/metadata"
 )
 
-// NewPackageGenerator generates source for a scanned package, specifically k8s styled doc.go, types.go and register.go files
+// NewPackageGenerator generates source for a scanned package, specifically k8s styled doc.go, types.go and register.go files.
 func NewPackageGenerator(ctx context.Context, source metadata.PackageMetadata, boilerplate []byte) generator.Package {
 	return &generator.DefaultPackage{
 		PackageName: source.TargetPackage().Name,

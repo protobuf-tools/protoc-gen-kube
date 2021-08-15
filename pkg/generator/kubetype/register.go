@@ -41,7 +41,7 @@ type registerGenerator struct {
 	imports namer.ImportTracker
 }
 
-// NewRegisterGenerator creates a new generator for creating k8s style register.go files
+// NewRegisterGenerator creates a new generator for creating k8s style register.go files.
 func NewRegisterGenerator(ctx context.Context, source metadata.PackageMetadata) generator.Generator {
 	return &registerGenerator{
 		ctx: ctx,
@@ -104,11 +104,15 @@ func (g registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
 	sw.Do(resourceFuncTemplate, m)
 	sw.Do(addKnownTypesFuncTemplate, m)
 
-	return sw.Error()
+	if err := sw.Error(); err != nil {
+		return fmt.Errorf("encountered error on write snippet: %w", err)
+	}
+
+	return nil
 }
 
 // isLowerCaseScheme checks if the kubetype is reflected as lower case in Kubernetes scheme.
-// This is a workaround as Istio CRDs should have CamelCase scheme in Kubernetes, e.g. `VirtualService` instead of `virtualservice`
+// This is a workaround as Istio CRDs should have CamelCase scheme in Kubernetes, e.g. `VirtualService` instead of `virtualservice`.
 func isLowerCaseScheme(tags []string) bool {
 	for _, s := range tags {
 		if s == "kubetype-gen:lowerCaseScheme" {

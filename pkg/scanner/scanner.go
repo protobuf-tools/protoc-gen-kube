@@ -36,7 +36,7 @@ import (
 )
 
 const (
-	// enabledTagName is the root tag used to identify types that need a corresponding kube type generated
+	// enabledTagName is the root tag used to identify types that need a corresponding kube type generated.
 	enabledTagName = "kubetype-gen"
 
 	// groupVersionTagName is the tag used to identify the k8s group/version associated with the generated types.
@@ -54,7 +54,7 @@ const (
 	kubeTagsTagTemplate = enabledTagName + ":%s:tag"
 )
 
-// Scanner is used to scan input packages for types with kubetype-gen tags
+// Scanner is used to scan input packages for types with kubetype-gen tags.
 type Scanner struct {
 	ctx context.Context
 
@@ -71,7 +71,7 @@ func (s *Scanner) WithContext(ctx context.Context) *Scanner {
 	return s
 }
 
-// Scan the input packages for types with kubetype-gen tags
+// Scan the input packages for types with kubetype-gen tags.
 func (s *Scanner) Scan(c *generator.Context, arguments *args.GeneratorArgs) generator.Packages {
 	if s.ctx != nil {
 		s.ctx = context.Background()

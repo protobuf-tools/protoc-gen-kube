@@ -25,7 +25,7 @@ import (
 	"k8s.io/gengo/namer"
 )
 
-// NameSystems used by the kubetype generator
+// NameSystems used by the kubetype generator.
 func NameSystems(generatedPackage string, tracker namer.ImportTracker) namer.NameSystems {
 	return namer.NameSystems{
 		"public":       namer.NewPublicNamer(0),
@@ -35,7 +35,7 @@ func NameSystems(generatedPackage string, tracker namer.ImportTracker) namer.Nam
 	}
 }
 
-// DefaultNameSystem to use if none is specified
+// DefaultNameSystem to use if none is specified.
 func DefaultNameSystem() string {
 	return "public"
 }

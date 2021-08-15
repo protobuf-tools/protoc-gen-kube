@@ -216,3 +216,7 @@ issues:
     - text: "shadow: declaration of \"err|ok\""
       linters:
         - govet
+    - text: "exitAfterDefer"
+      path: main.go
+      linters:
+        - gocritic

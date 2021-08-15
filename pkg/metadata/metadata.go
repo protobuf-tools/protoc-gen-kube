@@ -63,7 +63,7 @@ type PackageMetadata interface {
 	Validate() []error
 }
 
-// Store is used to store/access the source metadata collected by the scanner
+// Store is used to store/access the source metadata collected by the scanner.
 type Store interface {
 	// MetadataForGV returns the package metadata associated with the Group/Version
 	MetadataForGV(gv *schema.GroupVersion) PackageMetadata
@@ -207,7 +207,7 @@ func (m *packageMetadata) Validate() []error {
 	return []error{}
 }
 
-// NewKubeType returns a new KubeType object representing the source type, the target type and its comment tags
+// NewKubeType returns a new KubeType object representing the source type, the target type and its comment tags.
 func NewKubeType(rawType, kubeType *types.Type, tags []string) KubeType {
 	return &kubeTypeMetadata{
 		rawType:  rawType,

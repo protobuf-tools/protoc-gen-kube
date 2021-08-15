@@ -38,7 +38,7 @@ type typesGenerator struct {
 	imports namer.ImportTracker
 }
 
-// NewTypesGenerator creates a new generator for creating k8s style types.go files
+// NewTypesGenerator creates a new generator for creating k8s style types.go files.
 func NewTypesGenerator(ctx context.Context, source metadata.PackageMetadata) generator.Generator {
 	return &typesGenerator{
 		DefaultGen: generator.DefaultGen{
