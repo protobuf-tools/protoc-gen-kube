@@ -57,51 +57,44 @@ const (
 // Scanner is used to scan input packages for types with kubetype-gen tags.
 type Scanner struct {
 	ctx context.Context
-
-	arguments *args.GeneratorArgs
-	gctxt     *generator.Context
+	c   *generator.Context
+	arg *args.GeneratorArgs
 }
 
-// WithContext sets ctx to Scanner.
-//
-// If not set, use context.Background instead.
-func (s *Scanner) WithContext(ctx context.Context) *Scanner {
-	s.ctx = ctx
-
-	return s
-}
-
-// Scan the input packages for types with kubetype-gen tags.
-func (s *Scanner) Scan(c *generator.Context, arguments *args.GeneratorArgs) generator.Packages {
-	if s.ctx != nil {
-		s.ctx = context.Background()
+// New returns the new Scanner with gen context and args.
+func New(ctx context.Context, c *generator.Context, arg *args.GeneratorArgs) *Scanner {
+	return &Scanner{
+		ctx: ctx,
+		c:   c,
+		arg: arg,
 	}
+}
+
+// Packages the input packages for types with kubetype-gen tags.
+func (s *Scanner) Packages() generator.Packages {
 	logf := logr.FromContextOrDiscard(s.ctx)
 
-	s.arguments = arguments
-	s.gctxt = c
-
-	boilerplate, err := arguments.LoadGoBoilerplate()
+	boilerplate, err := s.arg.LoadGoBoilerplate()
 	if err != nil {
 		panic(fmt.Errorf("failed loading boilerplate: %w", err))
 	}
 
 	// scan input packages for kubetype-gen
-	metadataStore := metadata.NewMetadataStore(s.ctx, s.getBaseOutputPackage(), &c.Universe)
+	metadataStore := metadata.NewMetadataStore(s.ctx, s.getBaseOutputPackage(), &s.c.Universe)
 	fail := false
 
 	logf.V(1).Info("scanning input packages")
-	for _, input := range c.Inputs {
+	for _, input := range s.c.Inputs {
 		logf.V(1).Info("scanning package", "input", input)
 
-		pkg := c.Universe[input]
+		pkg := s.c.Universe[input]
 		if pkg == nil {
 			logf.V(1).Info("package not found, continue", "input", input)
 			continue
 		}
 
-		if strings.HasPrefix(arguments.OutputPackagePath, pkg.Path) {
-			logf.V(1).Info("ignoring package because located in the output package, continue", "ignored package", pkg.Path, "output package", arguments.OutputPackagePath)
+		if strings.HasPrefix(s.arg.OutputPackagePath, pkg.Path) {
+			logf.V(1).Info("ignoring package because located in the output package, continue", "ignored package", pkg.Path, "output package", s.arg.OutputPackagePath)
 			continue
 		}
 
@@ -203,7 +196,7 @@ func (s *Scanner) getGroupVersion(tags map[string][]string, defaultGV *schema.Gr
 }
 
 func (s *Scanner) getBaseOutputPackage() *types.Package {
-	return s.gctxt.Universe.Package(s.arguments.OutputPackagePath)
+	return s.c.Universe.Package(s.arg.OutputPackagePath)
 }
 
 func (s *Scanner) createKubeTypesForType(t *types.Type, outputPackage *types.Package) []metadata.KubeType {
@@ -212,7 +205,7 @@ func (s *Scanner) createKubeTypesForType(t *types.Type, outputPackage *types.Pac
 
 	for _, name := range namesForType {
 		tags := s.getTagsForKubeType(t, name)
-		newKubeTypes = append(newKubeTypes, metadata.NewKubeType(t, s.gctxt.Universe.Type(types.Name{Name: name, Package: outputPackage.Path}), tags))
+		newKubeTypes = append(newKubeTypes, metadata.NewKubeType(t, s.c.Universe.Type(types.Name{Name: name, Package: outputPackage.Path}), tags))
 	}
 
 	return newKubeTypes
