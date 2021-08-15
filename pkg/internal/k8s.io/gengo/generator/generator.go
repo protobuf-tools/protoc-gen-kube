@@ -179,7 +179,7 @@ type Context struct {
 
 	// If true, Execute* calls will just verify that the existing output is
 	// correct. (You may set this after calling NewContext.)
-	Verify bool
+	VerifyOnly bool
 
 	// Allows generators to add packages at runtime.
 	builder *parser.Builder

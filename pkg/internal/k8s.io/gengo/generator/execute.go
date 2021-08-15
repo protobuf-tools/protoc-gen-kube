@@ -282,7 +282,7 @@ func (c *Context) ExecutePackage(outDir string, p Package) error {
 			return fmt.Errorf("the file type %q registered for file %q does not exist in the context", f.FileType, f.Name)
 		}
 		var err error
-		if c.Verify {
+		if c.VerifyOnly {
 			err = assembler.VerifyFile(f, finalPath)
 		} else {
 			err = assembler.AssembleFile(f, finalPath)

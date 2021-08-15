@@ -202,7 +202,7 @@ func (g *GeneratorArgs) Execute(nameSystems namer.NameSystems, defaultSystem str
 		return fmt.Errorf("Failed making a context: %w", err)
 	}
 
-	c.Verify = g.VerifyOnly
+	c.VerifyOnly = g.VerifyOnly
 	packages := pkgs(c, g)
 	if err := c.ExecutePackages(g.OutputBase, packages); err != nil {
 		return fmt.Errorf("Failed executing generator: %w", err)

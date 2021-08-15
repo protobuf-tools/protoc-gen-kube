@@ -84,9 +84,9 @@ func gen() error {
 			return
 		}
 
-		c.Verify = arg.VerifyOnly
+		c.VerifyOnly = arg.VerifyOnly
 		scan := scanner.New(ctx, c, arg)
-		packages := scan.Packages(c, arg)
+		packages := scan.Packages()
 
 		if err := c.ExecutePackages(arg.OutputBase, packages); err != nil {
 			errc <- fmt.Errorf("failed executing generator: %w", err)
