@@ -27,7 +27,7 @@ var flagVersion bool
 
 func main() {
 	if err := gen(); err != nil {
-		fmt.Fprintf(os.Stderr, "protoc-gen-kube: %#v\n", err)
+		fmt.Fprintf(os.Stderr, "protoc-gen-kube: %v\n", err)
 	}
 }
 
