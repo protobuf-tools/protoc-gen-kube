@@ -210,3 +210,13 @@ func (g *GeneratorArgs) Execute(nameSystems namer.NameSystems, defaultSystem str
 
 	return nil
 }
+
+// SetArgsToBuilder sets arg options to *parser.Builder.
+func (g GeneratorArgs) SetArgsToBuilder(builder *parser.Builder) {
+	builder.IncludeTestFiles = g.IncludeTestFiles
+}
+
+// SetArgsToContext sets arg options to *generator.Context.
+func (g GeneratorArgs) SetArgsToContext(c *generator.Context) {
+	c.VerifyOnly = g.VerifyOnly
+}
