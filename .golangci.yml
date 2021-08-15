@@ -130,6 +130,7 @@ linters:
     - gomodguard               # Allow and block list linter for direct Go module dependencies.
     - interfacer               # Linter that suggests narrower interface types
     - maligned                 # Tool to detect Go structs that would take less memory if their fields were sorted
+    - nlreturn                 # nlreturn checks for a new line before return and branch statements to increase code clarity
     - promlinter               # Check Prometheus metrics naming via promlint
     - scopelint                # Scopelint checks for unpinned variables in go programs
     - sqlclosecheck            # Checks that sql.Rows and sql.Stmt are closed.
@@ -170,7 +171,6 @@ linters:
     - nakedret                 # Finds naked returns in functions greater than a specified function length
     - nestif                   # Reports deeply nested if statements
     - nilerr                   # Finds the code that returns nil even if it checks that the error is not nil.
-    - nlreturn                 # nlreturn checks for a new line before return and branch statements to increase code clarity
     - noctx                    # noctx finds sending http request without context.Context
     - nolintlint               # Reports ill-formed or insufficient nolint directives
     - paralleltest             # paralleltest detects missing usage of t.Parallel() method in your Go test
