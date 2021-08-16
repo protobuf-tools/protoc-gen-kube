@@ -86,9 +86,8 @@ func gen() error {
 
 		// update generator.Context via args
 		ga.SetArgsToContext(c)
-		scan := scanner.New(ctx, c, ga)
-		packages := scan.Packages()
 
+		packages := scanner.New(ctx, c, ga).Packages()
 		if err := c.ExecutePackages(ga.OutputBase, packages); err != nil {
 			errc <- fmt.Errorf("failed executing generator: %w", err)
 			return
