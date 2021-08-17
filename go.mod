@@ -23,13 +23,8 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )
 
-replace (
-	// support typeparams build tag
-	golang.org/x/tools => github.com/zchee/golang-tools v0.0.0-20210814085923-cf63d8262102
-
-	// support go-logr/logr@v1.0.0
-	k8s.io/klog/v2 => k8s.io/klog/v2 v2.10.1-0.20210806124320-e1f317b53636
-)
+// support go-logr/logr@v1.0.0
+replace k8s.io/klog/v2 => k8s.io/klog/v2 v2.10.1-0.20210806124320-e1f317b53636
 
 // pin k8s package
 replace (
