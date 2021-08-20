@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/signal"
 	"path/filepath"
 
 	"github.com/go-logr/logr"
@@ -33,15 +32,14 @@ func main() {
 }
 
 func gen() error {
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer cancel()
-
 	z, err := zap.NewDevelopment()
 	if err != nil {
 		return fmt.Errorf("create zap development logger: %w", err)
 	}
+
+	// setup logr
 	logf := zapr.NewLogger(z)
-	ctx = logr.NewContext(ctx, logf)
+	ctx = logr.NewContext(context.Background(), logf)
 
 	// inject third-party packages klog
 	klog.SetLogger(logf)
@@ -65,45 +63,28 @@ func gen() error {
 	ga.GoHeaderFilePath = filepath.Join(args.DefaultSourceTree(), "hack", "boilerplate", "boilerplate.go.txt")
 
 	// execute
-	errc := make(chan error, 1)
-	go func() {
-		defer close(errc)
-
-		builder, err := ga.NewBuilder()
-		if err != nil {
-			errc <- fmt.Errorf("failed making a parser: %w", err)
-			return
-		}
-
-		// pass through the flag on whether to include *_test.go files
-		ga.SetArgsToBuilder(builder)
-
-		c, err := generator.NewContext(builder, kubetype.NameSystems("", nil), kubetype.DefaultNameSystem())
-		if err != nil {
-			errc <- fmt.Errorf("failed making a context: %w", err)
-			return
-		}
-
-		// update generator.Context via args
-		ga.SetArgsToContext(c)
-
-		packages := scanner.New(ctx, c, ga).Packages()
-		if err := c.ExecutePackages(ga.OutputBase, packages); err != nil {
-			errc <- fmt.Errorf("failed executing generator: %w", err)
-			return
-		}
-
-		logf.Info("completed successfully")
-	}()
-
-	select {
-	case err := <-errc:
-		if err != nil {
-			return err
-		}
-	case <-ctx.Done():
-		return ctx.Err()
+	builder, err := ga.NewBuilder()
+	if err != nil {
+		return fmt.Errorf("failed making a parser: %w", err)
 	}
+
+	// pass through the flag on whether to include *_test.go files
+	ga.SetArgsToBuilder(builder)
+
+	c, err := generator.NewContext(builder, kubetype.NameSystems("", nil), kubetype.DefaultNameSystem())
+	if err != nil {
+		return fmt.Errorf("failed making a context: %w", err)
+	}
+
+	// update generator.Context via args
+	ga.SetArgsToContext(c)
+
+	packages := scanner.New(ctx, c, ga).Packages()
+	if err := c.ExecutePackages(ga.OutputBase, packages); err != nil {
+		return fmt.Errorf("failed executing generator: %w", err)
+	}
+
+	logf.Info("completed successfully")
 
 	return nil
 }
