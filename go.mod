@@ -3,7 +3,7 @@ module github.com/protobuf-tools/protoc-gen-kube
 go 1.17
 
 require (
-	github.com/go-logr/logr v1.0.0
+	github.com/go-logr/logr v1.1.0
 	github.com/go-logr/zapr v1.0.1-0.20210809170106-a3325063a237 // v1.0.0+1 is not semver
 	github.com/spf13/pflag v1.0.5
 	go.uber.org/zap v1.19.0
