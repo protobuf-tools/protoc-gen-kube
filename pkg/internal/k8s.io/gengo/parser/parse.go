@@ -23,7 +23,7 @@ import (
 	"go/constant"
 	"go/parser"
 	"go/token"
-	tc "go/types"
+	gotypes "go/types"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -61,7 +61,7 @@ type Builder struct {
 	absPaths map[importPathString]string
 
 	// Set by typeCheckPackage(), used by importPackage() and friends.
-	typeCheckedPackages map[importPathString]*tc.Package
+	typeCheckedPackages map[importPathString]*gotypes.Package
 
 	// Map of package path to whether the user requested it or it was from
 	// an import.
@@ -103,7 +103,7 @@ func New() *Builder {
 	return &Builder{
 		context:               &c,
 		buildPackages:         map[string]*build.Package{},
-		typeCheckedPackages:   map[importPathString]*tc.Package{},
+		typeCheckedPackages:   map[importPathString]*gotypes.Package{},
 		fset:                  token.NewFileSet(),
 		parsed:                map[importPathString][]parsedFile{},
 		absPaths:              map[importPathString]string{},
@@ -345,7 +345,7 @@ func isErrPackageNotFound(err error) bool {
 
 // importPackage is a function that will be called by the type check package when it
 // needs to import a go package. 'path' is the import path.
-func (b *Builder) importPackage(dir string, userRequested bool) (*tc.Package, error) {
+func (b *Builder) importPackage(dir string, userRequested bool) (*gotypes.Package, error) {
 	klog.V(5).Infof("importPackage %s", dir)
 	pkgPath := importPathString(dir)
 
@@ -408,14 +408,14 @@ type importAdapter struct {
 	b *Builder
 }
 
-func (a importAdapter) Import(path string) (*tc.Package, error) {
+func (a importAdapter) Import(path string) (*gotypes.Package, error) {
 	return a.b.importPackage(path, false)
 }
 
 // typeCheckPackage will attempt to return the package even if there are some
 // errors, so you may check whether the package is nil or not even if you get
 // an error.
-func (b *Builder) typeCheckPackage(pkgPath importPathString) (*tc.Package, error) {
+func (b *Builder) typeCheckPackage(pkgPath importPathString) (*gotypes.Package, error) {
 	klog.V(5).Infof("typeCheckPackage %s", pkgPath)
 	if pkg, ok := b.typeCheckedPackages[pkgPath]; ok {
 		if pkg != nil {
@@ -437,7 +437,7 @@ func (b *Builder) typeCheckPackage(pkgPath importPathString) (*tc.Package, error
 		files[i] = parsedFiles[i].file
 	}
 	b.typeCheckedPackages[pkgPath] = nil
-	c := tc.Config{
+	c := gotypes.Config{
 		IgnoreFuncBodies: true,
 		// Note that importAdapter can call b.importPackage which calls this
 		// method. So there can't be cycles in the import graph.
@@ -495,7 +495,7 @@ func (b *Builder) FindTypes() (types.Universe, error) {
 
 // addCommentsToType takes any accumulated comment lines prior to obj and
 // attaches them to the type t.
-func (b *Builder) addCommentsToType(obj tc.Object, t *types.Type) {
+func (b *Builder) addCommentsToType(obj gotypes.Object, t *types.Type) {
 	c1 := b.priorCommentLines(obj.Pos(), 1)
 	// c1.Text() is safe if c1 is nil
 	t.CommentLines = splitLines(c1.Text())
@@ -546,23 +546,23 @@ func (b *Builder) findTypesIn(pkgPath importPathString, u *types.Universe) error
 	s := pkg.Scope()
 	for _, n := range s.Names() {
 		obj := s.Lookup(n)
-		tn, ok := obj.(*tc.TypeName)
+		tn, ok := obj.(*gotypes.TypeName)
 		if ok {
 			t := b.walkType(*u, nil, tn.Type())
 			b.addCommentsToType(obj, t)
 		}
-		tf, ok := obj.(*tc.Func)
+		tf, ok := obj.(*gotypes.Func)
 		// We only care about functions, not concrete/abstract methods.
-		if ok && tf.Type() != nil && tf.Type().(*tc.Signature).Recv() == nil {
+		if ok && tf.Type() != nil && tf.Type().(*gotypes.Signature).Recv() == nil {
 			t := b.addFunction(*u, nil, tf)
 			b.addCommentsToType(obj, t)
 		}
-		tv, ok := obj.(*tc.Var)
+		tv, ok := obj.(*gotypes.Var)
 		if ok && !tv.IsField() {
 			t := b.addVariable(*u, nil, tv)
 			b.addCommentsToType(obj, t)
 		}
-		tconst, ok := obj.(*tc.Const)
+		tconst, ok := obj.(*gotypes.Const)
 		if ok {
 			t := b.addConstant(*u, nil, tconst)
 			b.addCommentsToType(obj, t)
@@ -649,7 +649,7 @@ func tcNameToName(in string) types.Name {
 	return name
 }
 
-func (b *Builder) convertSignature(u types.Universe, t *tc.Signature) *types.Signature {
+func (b *Builder) convertSignature(u types.Universe, t *gotypes.Signature) *types.Signature {
 	signature := &types.Signature{}
 	for i := 0; i < t.Params().Len(); i++ {
 		signature.Parameters = append(signature.Parameters, b.walkType(u, nil, t.Params().At(i).Type()))
@@ -665,7 +665,7 @@ func (b *Builder) convertSignature(u types.Universe, t *tc.Signature) *types.Sig
 }
 
 // walkType adds the type, and any necessary child types.
-func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *types.Type {
+func (b *Builder) walkType(u types.Universe, useName *types.Name, in gotypes.Type) *types.Type {
 	// Most of the cases are underlying types of the named type.
 	name := tcNameToName(in.String())
 	if useName != nil {
@@ -673,7 +673,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 	}
 
 	switch t := in.(type) {
-	case *tc.Struct:
+	case *gotypes.Struct:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -691,7 +691,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 			out.Members = append(out.Members, m)
 		}
 		return out
-	case *tc.Map:
+	case *gotypes.Map:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -700,7 +700,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		out.Elem = b.walkType(u, nil, t.Elem())
 		out.Key = b.walkType(u, nil, t.Key())
 		return out
-	case *tc.Pointer:
+	case *gotypes.Pointer:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -708,7 +708,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		out.Kind = types.Pointer
 		out.Elem = b.walkType(u, nil, t.Elem())
 		return out
-	case *tc.Slice:
+	case *gotypes.Slice:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -716,16 +716,16 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		out.Kind = types.Slice
 		out.Elem = b.walkType(u, nil, t.Elem())
 		return out
-	case *tc.Array:
+	case *gotypes.Array:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
 		}
 		out.Kind = types.Array
 		out.Elem = b.walkType(u, nil, t.Elem())
-		out.Len = in.(*tc.Array).Len()
+		out.Len = in.(*gotypes.Array).Len()
 		return out
-	case *tc.Chan:
+	case *gotypes.Chan:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -735,7 +735,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		// TODO: need to store direction, otherwise raw type name
 		// cannot be properly written.
 		return out
-	case *tc.Basic:
+	case *gotypes.Basic:
 		out := u.Type(types.Name{
 			Package: "",
 			Name:    t.Name(),
@@ -745,7 +745,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		}
 		out.Kind = types.Unsupported
 		return out
-	case *tc.Signature:
+	case *gotypes.Signature:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -753,7 +753,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 		out.Kind = types.Func
 		out.Signature = b.convertSignature(u, t)
 		return out
-	case *tc.Interface:
+	case *gotypes.Interface:
 		out := u.Type(name)
 		if out.Kind != types.Unknown {
 			return out
@@ -771,10 +771,10 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 			out.Methods[method.Name()] = mt
 		}
 		return out
-	case *tc.Named:
+	case *gotypes.Named:
 		var out *types.Type
 		switch t.Underlying().(type) {
-		case *tc.Named, *tc.Basic, *tc.Map, *tc.Slice:
+		case *gotypes.Named, *gotypes.Basic, *gotypes.Map, *gotypes.Slice:
 			name := tcNameToName(t.String())
 			out = u.Type(name)
 			if out.Kind != types.Unknown {
@@ -819,7 +819,7 @@ func (b *Builder) walkType(u types.Universe, useName *types.Name, in tc.Type) *t
 	}
 }
 
-func (b *Builder) addFunction(u types.Universe, useName *types.Name, in *tc.Func) *types.Type {
+func (b *Builder) addFunction(u types.Universe, useName *types.Name, in *gotypes.Func) *types.Type {
 	name := tcFuncNameToName(in.String())
 	if useName != nil {
 		name = *useName
@@ -830,7 +830,7 @@ func (b *Builder) addFunction(u types.Universe, useName *types.Name, in *tc.Func
 	return out
 }
 
-func (b *Builder) addVariable(u types.Universe, useName *types.Name, in *tc.Var) *types.Type {
+func (b *Builder) addVariable(u types.Universe, useName *types.Name, in *gotypes.Var) *types.Type {
 	name := tcVarNameToName(in.String())
 	if useName != nil {
 		name = *useName
@@ -841,7 +841,7 @@ func (b *Builder) addVariable(u types.Universe, useName *types.Name, in *tc.Var)
 	return out
 }
 
-func (b *Builder) addConstant(u types.Universe, useName *types.Name, in *tc.Const) *types.Type {
+func (b *Builder) addConstant(u types.Universe, useName *types.Name, in *gotypes.Const) *types.Type {
 	name := tcVarNameToName(in.String())
 	if useName != nil {
 		name = *useName
