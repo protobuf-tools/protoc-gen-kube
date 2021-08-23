@@ -47,3 +47,9 @@ replace (
 	k8s.io/apimachinery => k8s.io/apimachinery v0.22.1
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20210527164424-3c818078ee3d
 )
+
+// CVE
+exclude github.com/coreos/etcd v3.3.13+incompatible
+
+// CVE
+replace github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.2+incompatible
