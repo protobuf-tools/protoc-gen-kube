@@ -28,7 +28,6 @@ import (
 	"golang.org/x/tools/imports"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
-
 	"k8s.io/klog/v2"
 )
 
