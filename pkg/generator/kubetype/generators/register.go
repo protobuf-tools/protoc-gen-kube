@@ -1,6 +1,3 @@
-// Copyright 2021 The protobuf-tools Authors
-// SPDX-License-Identifier: Apache-2.0
-
 // Copyright 2019 Istio Authors
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +12,11 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-// This file copied and edit from https://github.com/istio/tools/blob/1.11.0/cmd/kubetype-gen/generators/register.go.
-
-package kubetype
+package generators
 
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"fmt"
 	"io"
 
@@ -30,21 +24,18 @@ import (
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
 
-	"github.com/protobuf-tools/protoc-gen-kube/pkg/metadata"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype/metadata"
 )
 
 type registerGenerator struct {
 	generator.DefaultGen
-
-	ctx     context.Context
 	source  metadata.PackageMetadata
 	imports namer.ImportTracker
 }
 
-// NewRegisterGenerator creates a new generator for creating k8s style register.go files.
-func NewRegisterGenerator(ctx context.Context, source metadata.PackageMetadata) generator.Generator {
+// NewRegisterGenerator creates a new generator for creating k8s style register.go files
+func NewRegisterGenerator(source metadata.PackageMetadata) generator.Generator {
 	return &registerGenerator{
-		ctx: ctx,
 		DefaultGen: generator.DefaultGen{
 			OptionalName: "register",
 		},
@@ -84,7 +75,7 @@ func (g *registerGenerator) Imports(c *generator.Context) []string {
 	return g.imports.ImportLines()
 }
 
-func (g *registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
+func (g registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
 	sw := generator.NewSnippetWriter(w, c, "$", "$")
 	var lowerCaseSchemeKubeTypes, camelCaseSchemeKubeTypes []metadata.KubeType
 	for _, k := range g.source.AllKubeTypes() {
@@ -104,15 +95,11 @@ func (g *registerGenerator) Finalize(c *generator.Context, w io.Writer) error {
 	sw.Do(resourceFuncTemplate, m)
 	sw.Do(addKnownTypesFuncTemplate, m)
 
-	if err := sw.Error(); err != nil {
-		return fmt.Errorf("encountered error on write snippet: %w", err)
-	}
-
-	return nil
+	return sw.Error()
 }
 
 // isLowerCaseScheme checks if the kubetype is reflected as lower case in Kubernetes scheme.
-// This is a workaround as Istio CRDs should have CamelCase scheme in Kubernetes, e.g. `VirtualService` instead of `virtualservice`.
+// This is a workaround as Istio CRDs should have CamelCase scheme in Kubernetes, e.g. `VirtualService` instead of `virtualservice`
 func isLowerCaseScheme(tags []string) bool {
 	for _, s := range tags {
 		if s == "kubetype-gen:lowerCaseScheme" {

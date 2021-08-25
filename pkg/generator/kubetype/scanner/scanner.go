@@ -15,8 +15,6 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-// This file copied and edit from https://github.com/istio/tools/blob/1.11.0/cmd/kubetype-gen/scanner/scanner.go.
-
 package scanner
 
 import (
@@ -31,12 +29,12 @@ import (
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/types"
 
-	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype"
-	"github.com/protobuf-tools/protoc-gen-kube/pkg/metadata"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype/generators"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype/metadata"
 )
 
 const (
-	// enabledTagName is the root tag used to identify types that need a corresponding kube type generated.
+	// enabledTagName is the root tag used to identify types that need a corresponding kube type generated
 	enabledTagName = "kubetype-gen"
 
 	// groupVersionTagName is the tag used to identify the k8s group/version associated with the generated types.
@@ -54,27 +52,28 @@ const (
 	kubeTagsTagTemplate = enabledTagName + ":%s:tag"
 )
 
-// Scanner is used to scan input packages for types with kubetype-gen tags.
+// Scanner is used to scan input packages for types with kubetype-gen tags
 type Scanner struct {
-	ctx context.Context
-	c   *generator.Context
-	arg *args.GeneratorArgs
+	ctx       context.Context
+	c         *generator.Context
+	arguments *args.GeneratorArgs
 }
 
 // New returns the new Scanner with gen context and args.
-func New(ctx context.Context, c *generator.Context, arg *args.GeneratorArgs) *Scanner {
+func New(ctx context.Context) *Scanner {
 	return &Scanner{
 		ctx: ctx,
-		c:   c,
-		arg: arg,
 	}
 }
 
-// Packages the input packages for types with kubetype-gen tags.
-func (s *Scanner) Packages() generator.Packages {
+// Scan the input packages for types with kubetype-gen tags
+func (s *Scanner) Scan(c *generator.Context, arguments *args.GeneratorArgs) generator.Packages {
+	s.c = c
+	s.arguments = arguments
+
 	logf := logr.FromContextOrDiscard(s.ctx)
 
-	boilerplate, err := s.arg.LoadGoBoilerplate()
+	boilerplate, err := s.arguments.LoadGoBoilerplate()
 	if err != nil {
 		panic(fmt.Errorf("failed loading boilerplate: %w", err))
 	}
@@ -83,18 +82,16 @@ func (s *Scanner) Packages() generator.Packages {
 	metadataStore := metadata.NewMetadataStore(s.ctx, s.getBaseOutputPackage(), &s.c.Universe)
 	fail := false
 
-	logf.V(1).Info("scanning input packages")
+	logf.V(5).Info("scanning input packages")
 	for _, input := range s.c.Inputs {
-		logf.V(1).Info("scanning package", "input", input)
-
+		logf.V(5).Info("scanning package", "input", input)
 		pkg := s.c.Universe[input]
 		if pkg == nil {
 			logf.V(1).Info("package not found, continue", "input", input)
 			continue
 		}
-
-		if strings.HasPrefix(s.arg.OutputPackagePath, pkg.Path) {
-			logf.V(1).Info("ignoring package because located in the output package, continue", "ignored package", pkg.Path, "output package", s.arg.OutputPackagePath)
+		if strings.HasPrefix(s.arguments.OutputPackagePath, pkg.Path) {
+			logf.V(1).Info("ignoring package because located in the output package, continue", "ignored package", pkg.Path, "output package", s.arguments.OutputPackagePath)
 			continue
 		}
 
@@ -110,18 +107,16 @@ func (s *Scanner) Packages() generator.Packages {
 			logf.Error(errors.New("invalid Group/Version"), "invalid Group/Version for package because Group not specified for Group/Version", "package path", pkg.Path, "Group/Version", defaultGV)
 			fail = true
 		default:
-			logf.V(1).Info("use default Group/Version for package", "Group/Version", defaultGV)
+			logf.V(5).Info("use default Group/Version for package", "Group/Version", defaultGV)
 		}
 
 		// scan package for types that need kube types generated
 		for _, t := range pkg.Types {
-			comments := make([]string, len(t.CommentLines)+len(t.SecondClosestCommentLines))
-			for i, line := range append(t.CommentLines, t.SecondClosestCommentLines...) {
-				comments[i] = line
-			}
-
+			comments := make([]string, 0, len(t.CommentLines)+len(t.SecondClosestCommentLines))
+			comments = append(comments, t.CommentLines...)
+			comments = append(comments, t.SecondClosestCommentLines...)
 			typeTags := types.ExtractCommentTags("+", comments)
-			if _, ok := typeTags[enabledTagName]; ok {
+			if _, exists := typeTags[enabledTagName]; exists {
 				var gv *schema.GroupVersion
 				gv, err = s.getGroupVersion(typeTags, defaultGV)
 				if err != nil {
@@ -144,16 +139,17 @@ func (s *Scanner) Packages() generator.Packages {
 				}
 
 				kubeTypes := s.createKubeTypesForType(t, packageMetadata.TargetPackage())
-				logf.V(1).Info("Kube types will be generated with Group/Version for raw type", "kubeTypes", kubeTypes, "Group/Version", gv, "type", t)
-
-				if err := packageMetadata.AddMetadataForType(t, kubeTypes...); err != nil {
+				logf.V(5).Info("kube types will be generated with Group/Version for raw type", "kubeTypes", kubeTypes, "Group/Version", gv, "type", t)
+				err = packageMetadata.AddMetadataForType(t, kubeTypes...)
+				if err != nil {
 					logf.Error(err, "error adding metadata source", "type", t)
 					fail = true
 				}
 			}
 		}
 	}
-	logf.V(1).Info("finished scanning input packages")
+
+	logf.V(5).Info("finished scanning input packages")
 
 	validationErrors := metadataStore.Validate()
 	if len(validationErrors) > 0 {
@@ -162,61 +158,53 @@ func (s *Scanner) Packages() generator.Packages {
 		}
 		fail = true
 	}
-
 	if fail {
 		panic(errors.New("errors occurred while scanning input, see previous output for details"))
 	}
 
-	mds := metadataStore.AllMetadata()
-	pkgs := make([]generator.Package, 0, len(mds))
-	for _, source := range mds {
+	generatorPackages := []generator.Package{}
+	for _, source := range metadataStore.AllMetadata() {
 		if len(source.RawTypes()) == 0 {
 			logf.V(1).Info("skipping generation, no types to generate", "Group/Version", source.GroupVersion(), "source", source)
 			continue
 		}
-
-		logf.V(1).Info("adding package generator", "group/version", source.GroupVersion())
-		pkgs = append(pkgs, kubetype.NewPackageGenerator(s.ctx, source, boilerplate))
+		logf.V(2).Info("adding package generator", "group/version", source.GroupVersion())
+		generatorPackages = append(generatorPackages, generators.NewPackageGenerator(source, boilerplate))
 	}
-
-	return pkgs
+	return generatorPackages
 }
 
 func (s *Scanner) getGroupVersion(tags map[string][]string, defaultGV *schema.GroupVersion) (*schema.GroupVersion, error) {
-	if value, ok := tags[groupVersionTagName]; ok && len(value) > 0 {
+	if value, exists := tags[groupVersionTagName]; exists && len(value) > 0 {
 		gv, err := schema.ParseGroupVersion(value[0])
-		if err != nil {
-			return nil, fmt.Errorf("invalid group version %q specified: %w", value[0], err)
+		if err == nil {
+			return &gv, nil
 		}
-
-		return &gv, nil
+		return nil, fmt.Errorf("invalid group version '%s' specified: %v", value[0], err)
 	}
-
 	return defaultGV, nil
 }
 
 func (s *Scanner) getBaseOutputPackage() *types.Package {
-	return s.c.Universe.Package(s.arg.OutputPackagePath)
+	return s.c.Universe.Package(s.arguments.OutputPackagePath)
 }
 
 func (s *Scanner) createKubeTypesForType(t *types.Type, outputPackage *types.Package) []metadata.KubeType {
 	namesForType := s.kubeTypeNamesForType(t)
 	newKubeTypes := make([]metadata.KubeType, 0, len(namesForType))
-
 	for _, name := range namesForType {
 		tags := s.getTagsForKubeType(t, name)
 		newKubeTypes = append(newKubeTypes, metadata.NewKubeType(t, s.c.Universe.Type(types.Name{Name: name, Package: outputPackage.Path}), tags))
 	}
-
 	return newKubeTypes
 }
 
 func (s *Scanner) kubeTypeNamesForType(t *types.Type) []string {
+	names := []string{}
 	comments := make([]string, 0, len(t.CommentLines)+len(t.SecondClosestCommentLines))
 	comments = append(comments, t.CommentLines...)
 	comments = append(comments, t.SecondClosestCommentLines...)
 	tags := types.ExtractCommentTags("+", comments)
-	names := make([]string, 0, len(tags[kubeTypeTagName]))
 
 	if value, ok := tags[kubeTypeTagName]; ok {
 		for _, name := range value {
@@ -240,10 +228,8 @@ func (s *Scanner) getTagsForKubeType(t *types.Type, name string) []string {
 	comments = append(comments, t.CommentLines...)
 	comments = append(comments, t.SecondClosestCommentLines...)
 	tags := types.ExtractCommentTags("+", comments)
-
-	if value, ok := tags[tagName]; ok {
+	if value, exists := tags[tagName]; exists {
 		return value
 	}
-
 	return []string{}
 }

@@ -1,6 +1,3 @@
-// Copyright 2021 The protobuf-tools Authors
-// SPDX-License-Identifier: Apache-2.0
-
 // Copyright 2019 Istio Authors
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,22 +12,19 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-// This file copied and edit from https://github.com/istio/tools/blob/1.11.0/cmd/kubetype-gen/generators/package.go.
-
-package kubetype
+package generators
 
 import (
-	"context"
 	"fmt"
 
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/types"
 
-	"github.com/protobuf-tools/protoc-gen-kube/pkg/metadata"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype/metadata"
 )
 
-// NewPackageGenerator generates source for a scanned package, specifically k8s styled doc.go, types.go and register.go files.
-func NewPackageGenerator(ctx context.Context, source metadata.PackageMetadata, boilerplate []byte) generator.Package {
+// NewPackageGenerator generates source for a scanned package, specifically k8s styled doc.go, types.go and register.go files
+func NewPackageGenerator(source metadata.PackageMetadata, boilerplate []byte) generator.Package {
 	return &generator.DefaultPackage{
 		PackageName: source.TargetPackage().Name,
 		PackagePath: source.TargetPackage().Path,
@@ -51,9 +45,9 @@ func NewPackageGenerator(ctx context.Context, source metadata.PackageMetadata, b
 		},
 		GeneratorList: []generator.Generator{
 			// generate types.go
-			NewTypesGenerator(ctx, source),
+			NewTypesGenerator(source),
 			// generate register.go
-			NewRegisterGenerator(ctx, source),
+			NewRegisterGenerator(source),
 			generator.DefaultGen{
 				OptionalName: "doc",
 			},

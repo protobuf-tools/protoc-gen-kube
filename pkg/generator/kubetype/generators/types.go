@@ -1,6 +1,3 @@
-// Copyright 2021 The protobuf-tools Authors
-// SPDX-License-Identifier: Apache-2.0
-
 // Copyright 2019 Istio Authors
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,34 +12,27 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-// This file copied and edit from https://github.com/istio/tools/blob/1.11.0/cmd/kubetype-gen/generators/types.go.
-
-package kubetype
+package generators
 
 import (
-	"context"
-	"fmt"
 	"io"
 
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
 
-	"github.com/protobuf-tools/protoc-gen-kube/pkg/metadata"
+	"github.com/protobuf-tools/protoc-gen-kube/pkg/generator/kubetype/metadata"
 )
 
 type typesGenerator struct {
 	generator.DefaultGen
-
-	ctx     context.Context
 	source  metadata.PackageMetadata
 	imports namer.ImportTracker
 }
 
-// NewTypesGenerator creates a new generator for creating k8s style types.go files.
-func NewTypesGenerator(ctx context.Context, source metadata.PackageMetadata) generator.Generator {
+// NewTypesGenerator creates a new generator for creating k8s style types.go files
+func NewTypesGenerator(source metadata.PackageMetadata) generator.Generator {
 	return &typesGenerator{
-		ctx: ctx,
 		DefaultGen: generator.DefaultGen{
 			OptionalName: "types",
 		},
@@ -63,11 +53,12 @@ func (g *typesGenerator) GenerateType(c *generator.Context, t *types.Type, w io.
 	kubeTypes := g.source.KubeTypes(t)
 	sw := generator.NewSnippetWriter(w, c, "$", "$")
 	m := map[string]interface{}{
-		"KubeType":   nil,
-		"RawType":    t,
-		"TypeMeta":   c.Universe.Type(types.Name{Name: "TypeMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
-		"ObjectMeta": c.Universe.Type(types.Name{Name: "ObjectMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
-		"ListMeta":   c.Universe.Type(types.Name{Name: "ListMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
+		"KubeType":    nil,
+		"RawType":     t,
+		"TypeMeta":    c.Universe.Type(types.Name{Name: "TypeMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
+		"ObjectMeta":  c.Universe.Type(types.Name{Name: "ObjectMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
+		"ListMeta":    c.Universe.Type(types.Name{Name: "ListMeta", Package: "k8s.io/apimachinery/pkg/apis/meta/v1"}),
+		"IstioStatus": c.Universe.Type(types.Name{Name: "IstioStatus", Package: "istio.io/api/meta/v1alpha1"}),
 	}
 	for _, kubeType := range kubeTypes {
 		// make sure local types get imports generated for them to prevent reusing their local name for real imports,
@@ -77,12 +68,7 @@ func (g *typesGenerator) GenerateType(c *generator.Context, t *types.Type, w io.
 		m["KubeType"] = kubeType
 		sw.Do(kubeTypeTemplate, m)
 	}
-
-	if err := sw.Error(); err != nil {
-		return fmt.Errorf("encountered error on write snippet: %w", err)
-	}
-
-	return nil
+	return sw.Error()
 }
 
 const kubeTypeTemplate = `

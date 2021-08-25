@@ -15,8 +15,6 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-// This file copied and edit from https://github.com/istio/tools/blob/1.11.0/cmd/kubetype-gen/metadata/metadata.go.
-
 package metadata
 
 import (
@@ -63,8 +61,9 @@ type PackageMetadata interface {
 	Validate() []error
 }
 
-// Store is used to store/access the source metadata collected by the scanner.
+// Store is used to store/access the source metadata collected by the scanner
 type Store interface {
+
 	// MetadataForGV returns the package metadata associated with the Group/Version
 	MetadataForGV(gv *schema.GroupVersion) PackageMetadata
 
@@ -112,7 +111,7 @@ func (s *metadataStore) MetadataForGV(gv *schema.GroupVersion) PackageMetadata {
 	simpleGV := schema.GroupVersion{Group: strings.SplitN(gv.Group, ".", 2)[0], Version: gv.Version}
 	existing := s.metadataForGV[simpleGV.String()]
 	if existing == nil {
-		logr.FromContextOrDiscard(s.ctx).V(1).Info("creating new PackageMetadata for Group/Version", "GroupVersion", gv)
+		logr.FromContextOrDiscard(s.ctx).V(5).Info("creating new PackageMetadata for Group/Version", "GroupVersion", gv)
 		existing = &packageMetadata{
 			groupVersion:        gv,
 			targetPackage:       s.createTargetPackage(gv),
@@ -207,8 +206,8 @@ func (m *packageMetadata) Validate() []error {
 	return []error{}
 }
 
-// NewKubeType returns a new KubeType object representing the source type, the target type and its comment tags.
-func NewKubeType(rawType, kubeType *types.Type, tags []string) KubeType {
+// NewKubeType returns a new KubeType object representing the source type, the target type and its comment tags
+func NewKubeType(rawType *types.Type, kubeType *types.Type, tags []string) KubeType {
 	return &kubeTypeMetadata{
 		rawType:  rawType,
 		kubeType: kubeType,
