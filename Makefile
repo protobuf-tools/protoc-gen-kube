@@ -34,7 +34,7 @@ GO_LDFLAGS+=-s -w "-extldflags=-static -static-pie"
 
 GO_BUILDTAGS=
 ifeq (${CGO_ENABLED},0)
-	GO_BUILDTAGS=osusergo netgo typeparams
+	GO_BUILDTAGS=osusergo netgo
 endif
 GO_BUILDTAGS_STATIC=static
 GO_INSTALLSUFFIX_STATIC=-installsuffix='netgo'
@@ -88,6 +88,10 @@ bin/$(APP):
 build: GO_BUILDTAGS+=${GO_BUILDTAGS_STATIC}
 build: GO_FLAGS+=${GO_INSTALLSUFFIX_STATIC}
 build: bin/$(APP)  ## Builds a executable.
+
+.PHONY: protoc
+protoc:
+	protoc --kube_out=./testdata ./testdata/subscription_replication_config.proto
 
 
 ##@ test and coverage
