@@ -88,10 +88,9 @@ func gen() error {
 	packages := scanner.New(ctx).Scan(gctxt, arg)
 	_ = packages
 
-	opts := protogen.Options{
+	protogen.Options{
 		ParamFunc: pflag.Set,
-	}
-	opts.Run(func(gen *protogen.Plugin) error {
+	}.Run(func(gen *protogen.Plugin) error {
 		gen.SupportedFeatures = generator.SupportedFeatures
 
 		req := gen.Request
