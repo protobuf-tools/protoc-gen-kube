@@ -3,6 +3,7 @@ module github.com/protobuf-tools/protoc-gen-kube
 go 1.17
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-logr/logr v1.1.0
 	github.com/go-logr/zapr v1.0.1-0.20210809170106-a3325063a237 // v1.0.0+1 is not semver
 	github.com/spf13/pflag v1.0.5
@@ -11,7 +12,7 @@ require (
 	k8s.io/apimachinery v0.22.1
 	k8s.io/gengo v0.0.0-20201214224949-b6c5ce23f027
 	k8s.io/klog/v2 v2.10.0
-	sigs.k8s.io/controller-tools v0.0.0-00000000000000-000000000000
+	sigs.k8s.io/controller-tools v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -25,10 +26,10 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/net v0.0.0-20210520170846-37e1c6afe023 // indirect
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
+	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	golang.org/x/text v0.3.6 // indirect
-	golang.org/x/tools v0.1.6-0.20210813165731-45389f592fe9 // indirect
+	golang.org/x/tools v0.1.6-0.20210825163236-3e0d083b858b // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
