@@ -1,0 +1,11 @@
+go 1.17
+
+directory (
+	.
+	./pkg/internal/k8s.io/gengo
+	./pkg/internal/sigs.k8s.io/controller-tools
+)
+
+replace k8s.io/gengo => ./pkg/internal/k8s.io/gengo
+
+replace sigs.k8s.io/controller-tools => ./pkg/internal/sigs.k8s.io/controller-tools
